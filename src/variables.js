@@ -8,6 +8,7 @@ module.exports = function updateVariables(self) {
 		{ variableId: 'generator_gain', name: 'Signal generator level (dB FS)' },
 		{ variableId: 'generator_type', name: 'Signal generator type' },
 		{ variableId: 'active_measurements', name: 'Number of running measurements' },
+		{ variableId: 'spl_logging', name: 'SPL logging state' },
 	]
 
 	for (const m of self.state.measurements) {

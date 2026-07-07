@@ -43,6 +43,14 @@ module.exports = function updatePresets(self) {
 	presets.genUp = button('Generator', 'Generator +1 dB', 'GEN\\n+1dB', 'nudgeGeneratorLevel', { delta: 1 })
 	presets.genDown = button('Generator', 'Generator -1 dB', 'GEN\\n-1dB', 'nudgeGeneratorLevel', { delta: -1 })
 
+	presets.splLoggingToggle = button('SPL', 'Toggle SPL Logging', 'SPL\\nLOG', 'splLogging', { state: 'toggle' }, [
+		{
+			feedbackId: 'splLoggingActive',
+			options: {},
+			style: { bgcolor: combineRgb(0, 155, 5), color: WHITE },
+		},
+	])
+
 	presets.startAll = button('Measurements', 'Start All Measurements', 'RUN\\nALL', 'startAllMeasurements', {}, [
 		{
 			feedbackId: 'anyMeasurementActive',

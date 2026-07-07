@@ -180,6 +180,25 @@ module.exports = function updateActions(self) {
 				await self.setTracking(name, action.options.state === 'on')
 			},
 		},
+		splLogging: {
+			name: 'SPL Logging Start/Stop',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'State',
+					id: 'state',
+					default: 'toggle',
+					choices: [
+						{ id: 'on', label: 'Start' },
+						{ id: 'off', label: 'Stop' },
+						{ id: 'toggle', label: 'Toggle' },
+					],
+				},
+			],
+			callback: async (action) => {
+				await self.setSplLogging(action.options.state)
+			},
+		},
 		showTargetCurves: {
 			name: 'Toggle Target Curves',
 			options: [],

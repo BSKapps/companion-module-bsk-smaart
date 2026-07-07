@@ -17,6 +17,7 @@ Smaart does not need to be the front application. Commands go over the network, 
 - Measurements: start or stop all measurements, or start/stop/toggle a single measurement picked from a list read live from Smaart.
 - Delay tracking: start or stop for all transfer function measurements or a single one.
 - Reset Averages.
+- SPL Logging Start/Stop: starts, stops, or toggles SPL logging, which is what makes the live SPL variables available.
 - Display toggles: target curves, coherence, peak hold, SPL meters, SPL mode, input meters, clock/SPL meter, bars.
 - Views: spectrum, transfer, user views 1-9, multi-spectrum, real-time and impulse modes, zoom presets 1-4 and zoom in/out.
 - Traces: hide, hide all, Z order, locked cursor controls.
@@ -24,7 +25,7 @@ Smaart does not need to be the front application. Commands go over the network, 
 
 ## Live SPL meters
 
-While SPL logging is running in Smaart, every calibrated input channel streams its meter values to Companion: SPL Fast/Slow (Z, A, and C weighted), Leq/LAeq/LCeq over 1, 15, and 60 minutes, Peak/Peak A/Peak C, FS Peak, and exposure. Each value is a variable you can put on a button, updated at the configurable rate (default twice per second). Start SPL logging in Smaart to activate them; the channels appear automatically.
+While SPL logging is running in Smaart, every calibrated input channel streams its meter values to Companion: SPL Fast/Slow (Z, A, and C weighted), Leq/LAeq/LCeq over 1, 15, and 60 minutes, Peak/Peak A/Peak C, FS Peak, and exposure. Each value is a variable you can put on a button, updated at the configurable rate (default twice per second). Start SPL logging in Smaart, or from the surface with the SPL Logging Start/Stop action, to activate them; the channels appear automatically. SPL values are only available while logging runs, so the readout buttons blank out when logging stops.
 
 ## Feedbacks
 

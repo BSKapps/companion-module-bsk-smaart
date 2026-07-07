@@ -395,6 +395,7 @@ class SmaartInstance extends InstanceBase {
 			generator_gain: this.state.generator.gain ?? '',
 			generator_type: this.state.generator.type ?? '',
 			active_measurements: this.state.measurements.filter((m) => m.active).length,
+			spl_logging: this.splLoggingActive() ? 'On' : 'Off',
 		}
 		for (const m of this.state.measurements) {
 			values[`measurement_${variableId(m.measurementName)}_active`] = m.active ? 'On' : 'Off'
@@ -485,6 +486,18 @@ class SmaartInstance extends InstanceBase {
 
 	async issueCommand(keypress) {
 		await this.request(buildKeypress(keypress))
+	}
+
+	splLoggingActive() {
+		return this.state.splChannels.length > 0
+	}
+
+	async setSplLogging(mode) {
+		const active = this.splLoggingActive()
+		if (mode === 'toggle' || (mode === 'on' && !active) || (mode === 'off' && active)) {
+			await this.issueCommand('option + L')
+			await this.poll()
+		}
 	}
 
 	async setGenerator(active) {
