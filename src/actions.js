@@ -1,0 +1,447 @@
+function directionOption(choices, def) {
+	return {
+		type: 'dropdown',
+		label: 'Direction',
+		id: 'direction',
+		default: def,
+		choices,
+	}
+}
+
+module.exports = function updateActions(self) {
+	const measurementOption = (label, filterType) => ({
+		type: 'dropdown',
+		label,
+		id: 'measurement',
+		default: self.measurementChoices(filterType)[0]?.id ?? '',
+		choices: self.measurementChoices(filterType),
+		allowCustom: true,
+	})
+
+	self.setActionDefinitions({
+		captureTrace: {
+			name: 'Capture Trace',
+			options: [measurementOption('Measurement', undefined)],
+			callback: async (action, context) => {
+				await self.captureTrace(await context.parseVariablesInString(action.options.measurement))
+			},
+		},
+		renameTrace: {
+			name: 'Rename Trace',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Trace File Path',
+					id: 'tracePath',
+					useVariables: { local: true },
+					required: true,
+					tooltip: 'Full path and filename of the captured trace',
+				},
+				{
+					type: 'textinput',
+					label: 'New Name',
+					id: 'traceName',
+					useVariables: { local: true },
+					required: true,
+				},
+			],
+			callback: async (action, context) => {
+				await self.renameTrace(
+					await context.parseVariablesInString(action.options.tracePath),
+					await context.parseVariablesInString(action.options.traceName),
+				)
+			},
+		},
+		startGenerator: {
+			name: 'Start Signal Generator',
+			options: [],
+			callback: async () => {
+				await self.setGenerator(true)
+			},
+		},
+		stopGenerator: {
+			name: 'Stop Signal Generator',
+			options: [],
+			callback: async () => {
+				await self.setGenerator(false)
+			},
+		},
+		setGeneratorLevel: {
+			name: 'Set Generator Level',
+			options: [
+				{
+					type: 'number',
+					label: 'Level (dB FS)',
+					id: 'level',
+					min: -200,
+					max: 0,
+					default: -18,
+					required: true,
+				},
+			],
+			callback: async (action) => {
+				await self.setGeneratorLevel(action.options.level)
+			},
+		},
+		nudgeGeneratorLevel: {
+			name: 'Adjust Generator Level',
+			options: [
+				{
+					type: 'number',
+					label: 'Amount (dB, negative = down)',
+					id: 'delta',
+					min: -20,
+					max: 20,
+					default: 1,
+					required: true,
+				},
+			],
+			callback: async (action) => {
+				await self.nudgeGeneratorLevel(action.options.delta)
+			},
+		},
+		resetAvg: {
+			name: 'Reset Averages',
+			options: [],
+			callback: async () => {
+				await self.resetAverages()
+			},
+		},
+		startAllMeasurements: {
+			name: 'Start All Measurements',
+			options: [],
+			callback: async () => {
+				await self.setMeasurementActive('allMeasurements', true)
+			},
+		},
+		stopAllMeasurements: {
+			name: 'Stop All Measurements',
+			options: [],
+			callback: async () => {
+				await self.setMeasurementActive('allMeasurements', false)
+			},
+		},
+		setMeasurementActive: {
+			name: 'Start/Stop Measurement',
+			options: [
+				measurementOption('Measurement', undefined),
+				{
+					type: 'dropdown',
+					label: 'State',
+					id: 'state',
+					default: 'toggle',
+					choices: [
+						{ id: 'on', label: 'Start' },
+						{ id: 'off', label: 'Stop' },
+						{ id: 'toggle', label: 'Toggle' },
+					],
+				},
+			],
+			callback: async (action, context) => {
+				const name = await context.parseVariablesInString(action.options.measurement)
+				if (action.options.state === 'toggle') {
+					await self.toggleMeasurement(name)
+				} else {
+					await self.setMeasurementActive(name, action.options.state === 'on')
+				}
+			},
+		},
+		startTrackingAll: {
+			name: 'Start Delay Tracking (all TF measurements)',
+			options: [],
+			callback: async () => {
+				await self.setTrackingAll(true)
+			},
+		},
+		stopTrackingAll: {
+			name: 'Stop Delay Tracking (all TF measurements)',
+			options: [],
+			callback: async () => {
+				await self.setTrackingAll(false)
+			},
+		},
+		setTracking: {
+			name: 'Start/Stop Delay Tracking (one measurement)',
+			options: [
+				measurementOption('Measurement', 'transfer function'),
+				{
+					type: 'dropdown',
+					label: 'State',
+					id: 'state',
+					default: 'on',
+					choices: [
+						{ id: 'on', label: 'Start' },
+						{ id: 'off', label: 'Stop' },
+					],
+				},
+			],
+			callback: async (action, context) => {
+				const name = await context.parseVariablesInString(action.options.measurement)
+				await self.setTracking(name, action.options.state === 'on')
+			},
+		},
+		showTargetCurves: {
+			name: 'Toggle Target Curves',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('X')
+			},
+		},
+		toggleCoherence: {
+			name: 'Toggle Coherence',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('C')
+			},
+		},
+		toggleClockMeter: {
+			name: 'Toggle Clock/SPL Meter',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('K')
+			},
+		},
+		realTimeMode: {
+			name: 'Real-Time Mode',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('R')
+			},
+		},
+		impulseMode: {
+			name: 'Impulse Mode',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('I')
+			},
+		},
+		toggleSPLHistory: {
+			name: 'SPL Mode',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('option + H')
+			},
+		},
+		toggleMeters: {
+			name: 'Toggle SPL Meters',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('E')
+			},
+		},
+		toggleInputMeters: {
+			name: 'Toggle Input Meters',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('shift + E')
+			},
+		},
+		toggleInputMeterOrientation: {
+			name: 'Toggle Input Meter Orientation',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('shift + option + E')
+			},
+		},
+		selectViewPreset: {
+			name: 'Select View Preset',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Preset',
+					id: 'viewPreset',
+					default: 'S',
+					choices: [
+						{ id: 'S', label: 'Spectrum' },
+						{ id: 'T', label: 'Transfer' },
+						{ id: '1', label: 'User View 1' },
+						{ id: '2', label: 'User View 2' },
+						{ id: '3', label: 'User View 3' },
+						{ id: '4', label: 'User View 4' },
+						{ id: '5', label: 'User View 5' },
+						{ id: '6', label: 'User View 6' },
+						{ id: '7', label: 'User View 7' },
+						{ id: '8', label: 'User View 8' },
+						{ id: '9', label: 'User View 9' },
+						{ id: '0', label: 'Multi-Spectrum' },
+					],
+				},
+			],
+			callback: async (action) => {
+				await self.issueCommand(action.options.viewPreset)
+			},
+		},
+		setZoomPreset: {
+			name: 'Set Zoom Preset',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Preset',
+					id: 'zoomPreset',
+					default: '1',
+					choices: [
+						{ id: '1', label: 'Zoom 1' },
+						{ id: '2', label: 'Zoom 2' },
+						{ id: '3', label: 'Zoom 3' },
+						{ id: '4', label: 'Zoom 4' },
+					],
+				},
+			],
+			callback: async (action) => {
+				await self.issueCommand('option + ' + action.options.zoomPreset)
+			},
+		},
+		zoomX: {
+			name: 'Zoom X Axis',
+			options: [
+				directionOption(
+					[
+						{ id: '+', label: 'In' },
+						{ id: '-', label: 'Out' },
+					],
+					'+',
+				),
+			],
+			callback: async (action) => {
+				await self.issueCommand('option + command' + action.options.direction)
+			},
+		},
+		zoomY: {
+			name: 'Zoom Y Axis',
+			options: [
+				directionOption(
+					[
+						{ id: '+', label: 'In' },
+						{ id: '-', label: 'Out' },
+					],
+					'+',
+				),
+			],
+			callback: async (action) => {
+				await self.issueCommand(action.options.direction)
+			},
+		},
+		zoomXY: {
+			name: 'Zoom X and Y Axis',
+			options: [
+				directionOption(
+					[
+						{ id: '+', label: 'In' },
+						{ id: '-', label: 'Out' },
+					],
+					'+',
+				),
+			],
+			callback: async (action) => {
+				await self.issueCommand('command' + action.options.direction)
+			},
+		},
+		cycleZOrder: {
+			name: 'Cycle Z Order',
+			options: [
+				directionOption(
+					[
+						{ id: 'forward', label: 'Forward' },
+						{ id: 'backward', label: 'Backward' },
+					],
+					'forward',
+				),
+			],
+			callback: async (action) => {
+				await self.issueCommand(action.options.direction === 'forward' ? 'Z' : 'shift + Z')
+			},
+		},
+		hideTrace: {
+			name: 'Hide Trace',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('H')
+			},
+		},
+		hideAllTraces: {
+			name: 'Hide All Traces',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('shift + command + H')
+			},
+		},
+		togglePeakHold: {
+			name: 'Toggle Peak Hold',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('P')
+			},
+		},
+		toggleBar: {
+			name: 'Toggle Bar',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Bar',
+					id: 'selectedBar',
+					default: 'O',
+					choices: [
+						{ id: 'O', label: 'Control' },
+						{ id: 'U', label: 'Command' },
+						{ id: 'B', label: 'Data' },
+					],
+				},
+			],
+			callback: async (action) => {
+				await self.issueCommand(action.options.selectedBar)
+			},
+		},
+		lockCursorToPeak: {
+			name: 'Lock Cursor To Peak',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('command + P')
+			},
+		},
+		clearLockedCursor: {
+			name: 'Clear Locked Cursor',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('command + X')
+			},
+		},
+		moveLockedCursor: {
+			name: 'Move Locked Cursor',
+			options: [
+				directionOption(
+					[
+						{ id: 'left', label: 'Left' },
+						{ id: 'right', label: 'Right' },
+					],
+					'left',
+				),
+			],
+			callback: async (action) => {
+				await self.issueCommand('command + cursor ' + action.options.direction)
+			},
+		},
+		cyclePlot: {
+			name: 'Cycle Preferred Plot',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('M')
+			},
+		},
+		customKeypress: {
+			name: 'Custom Keypress',
+			options: [
+				{
+					type: 'textinput',
+					label: 'Keypress',
+					id: 'keypress',
+					useVariables: { local: true },
+					required: true,
+					tooltip: 'Smaart hotkey string, e.g. "X", "shift + Z", "option + H", "cursor up"',
+				},
+			],
+			callback: async (action, context) => {
+				await self.issueCommand(await context.parseVariablesInString(action.options.keypress))
+			},
+		},
+	})
+}

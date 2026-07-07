@@ -1,0 +1,20 @@
+{
+	"name": "companion-module-bsk-smaart",
+	"version": "1.0.0",
+	"license": "MIT",
+	"main": "src/main.js",
+	"scripts": {
+		"build": "companion-module-build",
+		"test": "jest",
+		"format": "prettier --write ."
+	},
+	"prettier": "@companion-module/tools/.prettierrc.json",
+	"dependencies": {
+		"@companion-module/base": "~1.14.1"
+	},
+	"devDependencies": {
+		"@companion-module/tools": "^2.6.1",
+		"jest": "^30.3.0",
+		"prettier": "^3.0.0"
+	}
+}
