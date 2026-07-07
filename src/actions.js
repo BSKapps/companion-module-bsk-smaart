@@ -454,7 +454,9 @@ module.exports = function updateActions(self) {
 					label: 'Command',
 					id: 'command',
 					default: self.state.commands[0]?.keypresses?.[0] ?? '',
-					choices: self.state.commands.map((c) => ({ id: c.keypresses[0], label: c.description })),
+					choices: self.state.commands
+						.filter((c, i, arr) => arr.findIndex((x) => x.keypresses[0] === c.keypresses[0]) === i)
+						.map((c) => ({ id: c.keypresses[0], label: c.description })),
 					allowCustom: true,
 				},
 			],
