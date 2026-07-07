@@ -101,6 +101,24 @@ module.exports = function updatePresets(self) {
 				],
 			}
 		}
+		presets.splTapToLog = {
+			category: 'SPL',
+			name: 'SPL A Slow, tap to start/stop logging',
+			type: 'button',
+			style: {
+				text: `SPL A\\n$(${self.label}:spl_a_slow_${chanSlug})`,
+				size: '18',
+				color: WHITE,
+				bgcolor: BLACK,
+			},
+			steps: [{ down: [{ actionId: 'splLogging', options: { state: 'toggle' } }], up: [] }],
+			feedbacks: [
+				{
+					feedbackId: 'splZone',
+					options: { channel: splChannel.key, metric: 'SPL A Slow' },
+				},
+			],
+		}
 		presets.splAlarm = {
 			category: 'SPL',
 			name: 'SPL alarm',

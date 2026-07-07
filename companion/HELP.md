@@ -30,6 +30,8 @@ Live SPL metering works on Smaart Suite and the Smaart SPL edition. Smaart LE an
 
 While SPL logging is running in Smaart, every calibrated input channel streams its meter values to Companion: SPL Fast/Slow (Z, A, and C weighted), Leq/LAeq/LCeq over the configured periods, Peak/Peak C, FS Peak, and exposure. Each value is a variable you can put on a button, updated at the configurable rate (up to 8 per second, default 2). Start SPL logging in Smaart, or from the surface with the SPL Logging Start/Stop action, to activate them; the channels appear automatically. SPL values are only available while logging runs, so the readout buttons blank out when logging stops. The SPL Alarm feedback follows the alarm levels you set in Smaart.
 
+The "SPL A Slow, tap to start/stop logging" preset is a single self-contained button: press it to start SPL logging, then it shows the live level coloured by Smaart's thresholds, and press again to stop. The SPL presets only appear in the Presets list while logging is running, because that is when Smaart exposes the channels. Drag the button onto your surface once while logging is on; it keeps working across later logging on/off cycles.
+
 ## Feedbacks
 
 - Signal Generator Running: button lights while the generator is on.
