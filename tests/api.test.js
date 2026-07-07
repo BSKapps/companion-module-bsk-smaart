@@ -10,6 +10,7 @@ const {
 	variableId,
 	metricSlug,
 	parseMetrics,
+	parseViolations,
 	zoneForValue,
 	flattenCalibratedChannels,
 	thresholdsByMetric,
@@ -122,6 +123,22 @@ describe('parseMetrics', () => {
 	})
 	test('handles missing input', () => {
 		expect(parseMetrics(undefined)).toEqual({})
+	})
+	test('ignores non-numeric properties like violation', () => {
+		expect(parseMetrics([{ 'SPL A Slow': 111.2, violation: true }])).toEqual({ 'SPL A Slow': 111.2 })
+	})
+})
+
+describe('parseViolations', () => {
+	test('collects metrics flagged with violation', () => {
+		const v = parseViolations([{ 'SPL A Slow': 111.2, violation: true }, { 'Peak C': 90 }])
+		expect(v.has('SPL A Slow')).toBe(true)
+		expect(v.has('Peak C')).toBe(false)
+		expect(v.size).toBe(1)
+	})
+	test('empty when no violations', () => {
+		expect(parseViolations([{ 'SPL Fast': 80 }]).size).toBe(0)
+		expect(parseViolations(undefined).size).toBe(0)
 	})
 })
 

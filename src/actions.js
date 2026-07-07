@@ -446,6 +446,22 @@ module.exports = function updateActions(self) {
 				await self.issueCommand('M')
 			},
 		},
+		runCommand: {
+			name: 'Run Command (list from Smaart)',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Command',
+					id: 'command',
+					default: self.state.commands[0]?.keypresses?.[0] ?? '',
+					choices: self.state.commands.map((c) => ({ id: c.keypresses[0], label: c.description })),
+					allowCustom: true,
+				},
+			],
+			callback: async (action, context) => {
+				await self.issueCommand(await context.parseVariablesInString(action.options.command))
+			},
+		},
 		customKeypress: {
 			name: 'Custom Keypress',
 			options: [

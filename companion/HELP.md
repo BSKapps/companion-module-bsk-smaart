@@ -1,6 +1,6 @@
 # BSK Apps: Smaart Control
 
-Controls Rational Acoustics Smaart Suite V9 / Smaart LE V9 over the Smaart API.
+Controls Rational Acoustics Smaart V9 over the Smaart API. Control actions work on Smaart Suite, RT, and LE. Live SPL metering works on Smaart Suite and the Smaart SPL edition.
 
 ## Setup
 
@@ -21,11 +21,14 @@ Smaart does not need to be the front application. Commands go over the network, 
 - Display toggles: target curves, coherence, peak hold, SPL meters, SPL mode, input meters, clock/SPL meter, bars.
 - Views: spectrum, transfer, user views 1-9, multi-spectrum, real-time and impulse modes, zoom presets 1-4 and zoom in/out.
 - Traces: hide, hide all, Z order, locked cursor controls.
+- Run Command: pick any command from a list Smaart reports over the API, so you do not need to know the hotkey.
 - Custom Keypress: send any Smaart hotkey string, e.g. "shift + Z" or "cursor up", for anything not covered above.
 
 ## Live SPL meters
 
-While SPL logging is running in Smaart, every calibrated input channel streams its meter values to Companion: SPL Fast/Slow (Z, A, and C weighted), Leq/LAeq/LCeq over 1, 15, and 60 minutes, Peak/Peak A/Peak C, FS Peak, and exposure. Each value is a variable you can put on a button, updated at the configurable rate (default twice per second). Start SPL logging in Smaart, or from the surface with the SPL Logging Start/Stop action, to activate them; the channels appear automatically. SPL values are only available while logging runs, so the readout buttons blank out when logging stops.
+Live SPL metering works on Smaart Suite and the Smaart SPL edition. Smaart LE and RT do not expose SPL over the API, so the SPL variables and feedbacks stay empty on those editions.
+
+While SPL logging is running in Smaart, every calibrated input channel streams its meter values to Companion: SPL Fast/Slow (Z, A, and C weighted), Leq/LAeq/LCeq over the configured periods, Peak/Peak C, FS Peak, and exposure. Each value is a variable you can put on a button, updated at the configurable rate (up to 8 per second, default 2). Start SPL logging in Smaart, or from the surface with the SPL Logging Start/Stop action, to activate them; the channels appear automatically. SPL values are only available while logging runs, so the readout buttons blank out when logging stops. The SPL Alarm feedback follows the alarm levels you set in Smaart.
 
 ## Feedbacks
 

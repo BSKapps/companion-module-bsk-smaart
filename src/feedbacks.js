@@ -65,12 +65,8 @@ module.exports = function updateFeedbacks(self) {
 			},
 			options: [splChannelOption],
 			callback: (feedback) => {
-				const channel = self.state.splChannels.find((c) => c.key === feedback.options.channel)
-				if (!channel) return false
-				return channel.alarms.some((alarm) => {
-					const value = self.splValue(channel.key, alarm.metric)
-					return value !== undefined && value >= alarm.level
-				})
+				const violations = self.state.splViolations[feedback.options.channel]
+				return violations ? violations.size > 0 : false
 			},
 		},
 		generatorActive: {

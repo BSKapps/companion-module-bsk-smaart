@@ -11,6 +11,7 @@ const {
 	variableId,
 	metricSlug,
 	parseMetrics,
+	parseViolations,
 	flattenCalibratedChannels,
 	thresholdsByMetric,
 	flattenMeasurements,
@@ -42,6 +43,8 @@ class SmaartInstance extends InstanceBase {
 			splMetrics: [],
 			splThresholds: {},
 			splValues: {},
+			splViolations: {},
+			commands: [],
 		}
 		this.splStreams = new Map()
 	}
@@ -117,10 +120,10 @@ class SmaartInstance extends InstanceBase {
 			{
 				type: 'number',
 				id: 'splFPS',
-				label: 'SPL meter updates per second',
+				label: 'SPL meter updates per second (max 8)',
 				width: 4,
 				min: 1,
-				max: 10,
+				max: 8,
 				default: 2,
 			},
 		]
@@ -211,6 +214,11 @@ class SmaartInstance extends InstanceBase {
 			smaart_version: info.applicationVersion ?? '',
 			smaart_app: info.applicationName ?? '',
 		})
+		const cmds = await this.request(buildGet('commands'), { quiet: true })
+		if (cmds && cmds.error === undefined && Array.isArray(cmds.commands)) {
+			this.state.commands = cmds.commands.filter((c) => Array.isArray(c.keypresses) && c.keypresses.length > 0)
+			this.refreshDefinitions()
+		}
 		this.startPolling()
 	}
 
@@ -316,6 +324,7 @@ class SmaartInstance extends InstanceBase {
 				}
 				this.splStreams.delete(key)
 				delete this.state.splValues[key]
+				delete this.state.splViolations[key]
 			}
 		}
 		for (const [key, channel] of wanted) {
@@ -335,7 +344,7 @@ class SmaartInstance extends InstanceBase {
 
 		stream.addEventListener('open', () => {
 			if (this.splStreams.get(key) !== stream) return
-			stream.send(JSON.stringify({ action: 'set', properties: [{ targetFPS: this.config.splFPS ?? 2 }] }))
+			stream.send(JSON.stringify({ action: 'set', properties: [{ targetFPS: Math.min(8, this.config.splFPS ?? 2) }] }))
 		})
 
 		stream.addEventListener('message', (message) => {
@@ -348,6 +357,7 @@ class SmaartInstance extends InstanceBase {
 			}
 			if (!Array.isArray(msg.metrics)) return
 			this.state.splValues[key] = parseMetrics(msg.metrics)
+			this.state.splViolations[key] = parseViolations(msg.metrics)
 			this.publishSpl(key)
 		})
 

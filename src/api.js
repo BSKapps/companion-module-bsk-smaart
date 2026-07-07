@@ -73,9 +73,22 @@ function metricSlug(metric) {
 function parseMetrics(metricsArray) {
 	const out = {}
 	for (const entry of metricsArray ?? []) {
-		for (const [name, value] of Object.entries(entry)) out[name] = value
+		for (const [name, value] of Object.entries(entry)) {
+			if (typeof value === 'number') out[name] = value
+		}
 	}
 	return out
+}
+
+function parseViolations(metricsArray) {
+	const violations = new Set()
+	for (const entry of metricsArray ?? []) {
+		if (entry.violation === true) {
+			const name = Object.keys(entry).find((k) => typeof entry[k] === 'number')
+			if (name) violations.add(name)
+		}
+	}
+	return violations
 }
 
 function zoneForValue(value, thresholds) {
@@ -134,6 +147,7 @@ module.exports = {
 	variableId,
 	metricSlug,
 	parseMetrics,
+	parseViolations,
 	zoneForValue,
 	flattenCalibratedChannels,
 	thresholdsByMetric,
