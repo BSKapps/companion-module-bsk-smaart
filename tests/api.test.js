@@ -8,6 +8,11 @@ const {
 	buildRenameTrace,
 	clampGain,
 	variableId,
+	metricSlug,
+	parseMetrics,
+	zoneForValue,
+	flattenCalibratedChannels,
+	thresholdsByMetric,
 	flattenMeasurements,
 } = require('../src/api')
 
@@ -97,6 +102,88 @@ describe('flattenMeasurements', () => {
 	test('handles missing lists', () => {
 		expect(flattenMeasurements({})).toEqual([])
 		expect(flattenMeasurements(undefined)).toEqual([])
+	})
+})
+
+describe('metricSlug', () => {
+	test('lowercases and underscores', () => {
+		expect(metricSlug('SPL A Slow')).toBe('spl_a_slow')
+		expect(metricSlug('LAeq 15')).toBe('laeq_15')
+		expect(metricSlug('FS Peak')).toBe('fs_peak')
+	})
+})
+
+describe('parseMetrics', () => {
+	test('merges single-key objects', () => {
+		expect(parseMetrics([{ 'SPL Fast': 89.7 }, { 'Peak C': 98.4 }])).toEqual({
+			'SPL Fast': 89.7,
+			'Peak C': 98.4,
+		})
+	})
+	test('handles missing input', () => {
+		expect(parseMetrics(undefined)).toEqual({})
+	})
+})
+
+describe('zoneForValue', () => {
+	const t = { greenAboveLevel: 80, yellowAboveLevel: 100, redAboveLevel: 103 }
+	test('zones by threshold', () => {
+		expect(zoneForValue(104, t)).toBe('red')
+		expect(zoneForValue(101, t)).toBe('yellow')
+		expect(zoneForValue(85, t)).toBe('green')
+		expect(zoneForValue(60, t)).toBe(null)
+	})
+	test('handles missing data', () => {
+		expect(zoneForValue(undefined, t)).toBe(null)
+		expect(zoneForValue(90, undefined)).toBe(null)
+	})
+})
+
+describe('flattenCalibratedChannels', () => {
+	test('flattens devices to keyed channels', () => {
+		const channels = flattenCalibratedChannels({
+			devices: [
+				{
+					deviceName: 'EVO4',
+					activeCalibratedChannels: [
+						{
+							channelName: 'FOH MIC',
+							streamEndpoint: '/api/v4//devices/EVO4/channels/FOH%20MIC',
+							alarms: [{ metric: 'Peak C', level: 110 }],
+						},
+					],
+				},
+			],
+		})
+		expect(channels).toEqual([
+			{
+				key: 'EVO4/FOH MIC',
+				deviceName: 'EVO4',
+				channelName: 'FOH MIC',
+				streamEndpoint: '/api/v4//devices/EVO4/channels/FOH%20MIC',
+				alarms: [{ metric: 'Peak C', level: 110 }],
+			},
+		])
+	})
+	test('handles empty response', () => {
+		expect(flattenCalibratedChannels({ devices: [] })).toEqual([])
+		expect(flattenCalibratedChannels(undefined)).toEqual([])
+	})
+})
+
+describe('thresholdsByMetric', () => {
+	test('zips metrics with thresholds', () => {
+		const out = thresholdsByMetric({
+			metrics: ['FS Peak', 'Peak C'],
+			colorThresholds: [
+				{ greenAboveLevel: 80, yellowAboveLevel: 100, redAboveLevel: 103 },
+				{ greenAboveLevel: 80, yellowAboveLevel: 90, redAboveLevel: 100 },
+			],
+		})
+		expect(out['Peak C'].redAboveLevel).toBe(100)
+	})
+	test('handles missing lists', () => {
+		expect(thresholdsByMetric(undefined)).toEqual({})
 	})
 })
 

@@ -22,11 +22,18 @@ Smaart does not need to be the front application. Commands go over the network, 
 - Traces: hide, hide all, Z order, locked cursor controls.
 - Custom Keypress: send any Smaart hotkey string, e.g. "shift + Z" or "cursor up", for anything not covered above.
 
+## Live SPL meters
+
+While SPL logging is running in Smaart, every calibrated input channel streams its meter values to Companion: SPL Fast/Slow (Z, A, and C weighted), Leq/LAeq/LCeq over 1, 15, and 60 minutes, Peak/Peak A/Peak C, FS Peak, and exposure. Each value is a variable you can put on a button, updated at the configurable rate (default twice per second). Start SPL logging in Smaart to activate them; the channels appear automatically.
+
 ## Feedbacks
 
 - Signal Generator Running: button lights while the generator is on.
 - Measurement Running / Any Measurement Running.
 - Delay Tracking Running.
+- SPL Above Level: lights when a chosen metric on a chosen channel reaches a level you set.
+- SPL Zone Colour: colours the button green/yellow/red using the thresholds configured in Smaart.
+- SPL Alarm Level Reached: lights when a channel hits an alarm level configured in Smaart.
 
 ## Variables
 
@@ -34,7 +41,8 @@ Smaart does not need to be the front application. Commands go over the network, 
 - Generator state, level, and signal type.
 - Number of running measurements.
 - Per measurement: running state, and delay in ms for transfer function measurements.
+- Per calibrated channel while SPL logging runs: all SPL meter metrics listed above.
 
 ## Notes
 
-Actions that change what is drawn on screen (views, zoom, toggles) act on the active Smaart window, same as pressing the hotkey in Smaart. Live SPL readout variables are not available yet; they depend on API features not exposed by the current Smaart API commands this module uses.
+Actions that change what is drawn on screen (views, zoom, toggles) act on the active Smaart window, same as pressing the hotkey in Smaart.

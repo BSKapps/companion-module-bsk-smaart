@@ -1,4 +1,4 @@
-const { variableId } = require('./api')
+const { variableId, metricSlug } = require('./api')
 
 module.exports = function updateVariables(self) {
 	const definitions = [
@@ -19,6 +19,15 @@ module.exports = function updateVariables(self) {
 			definitions.push({
 				variableId: `delay_${variableId(m.measurementName)}`,
 				name: `${m.measurementName} delay (ms)`,
+			})
+		}
+	}
+
+	for (const channel of self.state.splChannels) {
+		for (const metric of self.state.splMetrics) {
+			definitions.push({
+				variableId: `${metricSlug(metric)}_${variableId(channel.key)}`,
+				name: `${channel.channelName} (${channel.deviceName}) ${metric}`,
 			})
 		}
 	}

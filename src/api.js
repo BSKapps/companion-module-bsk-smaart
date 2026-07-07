@@ -66,6 +66,52 @@ function variableId(measurementName) {
 	return measurementName.replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_+|_+$/g, '')
 }
 
+function metricSlug(metric) {
+	return metric.toLowerCase().replace(/[^a-z0-9]+/g, '_')
+}
+
+function parseMetrics(metricsArray) {
+	const out = {}
+	for (const entry of metricsArray ?? []) {
+		for (const [name, value] of Object.entries(entry)) out[name] = value
+	}
+	return out
+}
+
+function zoneForValue(value, thresholds) {
+	if (value === undefined || !thresholds) return null
+	if (value >= thresholds.redAboveLevel) return 'red'
+	if (value >= thresholds.yellowAboveLevel) return 'yellow'
+	if (value >= thresholds.greenAboveLevel) return 'green'
+	return null
+}
+
+function flattenCalibratedChannels(response) {
+	const channels = []
+	for (const device of response?.devices ?? []) {
+		for (const channel of device.activeCalibratedChannels ?? []) {
+			channels.push({
+				key: `${device.deviceName}/${channel.channelName}`,
+				deviceName: device.deviceName,
+				channelName: channel.channelName,
+				streamEndpoint: channel.streamEndpoint,
+				alarms: channel.alarms ?? [],
+			})
+		}
+	}
+	return channels
+}
+
+function thresholdsByMetric(response) {
+	const metrics = response?.metrics ?? []
+	const thresholds = response?.colorThresholds ?? []
+	const out = {}
+	metrics.forEach((metric, i) => {
+		if (thresholds[i]) out[metric] = thresholds[i]
+	})
+	return out
+}
+
 function flattenMeasurements(response) {
 	const spectrum = response?.spectrumMeasurements ?? []
 	const transfer = response?.transferFunctionMeasurements ?? []
@@ -86,5 +132,10 @@ module.exports = {
 	buildRenameTrace,
 	clampGain,
 	variableId,
+	metricSlug,
+	parseMetrics,
+	zoneForValue,
+	flattenCalibratedChannels,
+	thresholdsByMetric,
 	flattenMeasurements,
 }

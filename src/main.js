@@ -9,6 +9,10 @@ const {
 	buildRenameTrace,
 	clampGain,
 	variableId,
+	metricSlug,
+	parseMetrics,
+	flattenCalibratedChannels,
+	thresholdsByMetric,
 	flattenMeasurements,
 } = require('./api')
 const updateActions = require('./actions')
@@ -34,7 +38,12 @@ class SmaartInstance extends InstanceBase {
 			generator: {},
 			measurements: [],
 			delays: {},
+			splChannels: [],
+			splMetrics: [],
+			splThresholds: {},
+			splValues: {},
 		}
+		this.splStreams = new Map()
 	}
 
 	async init(config) {
@@ -104,6 +113,15 @@ class SmaartInstance extends InstanceBase {
 				min: 500,
 				max: 10000,
 				default: 2000,
+			},
+			{
+				type: 'number',
+				id: 'splFPS',
+				label: 'SPL meter updates per second',
+				width: 4,
+				min: 1,
+				max: 10,
+				default: 2,
 			},
 		]
 	}
@@ -226,11 +244,32 @@ class SmaartInstance extends InstanceBase {
 			clearInterval(this.pollTimer)
 			this.pollTimer = null
 		}
+		this.closeSplStreams()
+	}
+
+	closeSplStreams() {
+		for (const [, stream] of this.splStreams) {
+			try {
+				stream.close(1000)
+			} catch (_e) {
+				this.log('debug', 'SPL stream close failed')
+			}
+		}
+		this.splStreams.clear()
 	}
 
 	async poll() {
 		if (!this.socket || this.socket.readyState !== WebSocket.OPEN) return
+		if (this.polling) return
+		this.polling = true
+		try {
+			await this.pollOnce()
+		} finally {
+			this.polling = false
+		}
+	}
 
+	async pollOnce() {
 		const generator = await this.request(buildGet('signalGenerator'), { quiet: true })
 		if (generator && generator.error === undefined) this.state.generator = generator
 
@@ -251,7 +290,103 @@ class SmaartInstance extends InstanceBase {
 			}
 		}
 
+		const calibrated = await this.request(buildGet('activeCalibratedInputs'), { quiet: true })
+		if (calibrated && calibrated.error === undefined) {
+			const channels = flattenCalibratedChannels(calibrated)
+			const channelsChanged =
+				channels.map((c) => c.key).join('|') !== this.state.splChannels.map((c) => c.key).join('|')
+			this.state.splChannels = channels
+			this.state.splMetrics = calibrated.metrics ?? []
+			this.state.splThresholds = thresholdsByMetric(calibrated)
+			this.reconcileSplStreams()
+			if (channelsChanged) this.refreshDefinitions()
+		}
+
 		this.publishState()
+	}
+
+	reconcileSplStreams() {
+		const wanted = new Map(this.state.splChannels.map((c) => [c.key, c]))
+		for (const [key, stream] of this.splStreams) {
+			if (!wanted.has(key)) {
+				try {
+					stream.close(1000)
+				} catch (_e) {
+					this.log('debug', 'SPL stream close failed')
+				}
+				this.splStreams.delete(key)
+				delete this.state.splValues[key]
+			}
+		}
+		for (const [key, channel] of wanted) {
+			if (!this.splStreams.has(key)) this.openSplStream(key, channel)
+		}
+	}
+
+	openSplStream(key, channel) {
+		let stream
+		try {
+			stream = new WebSocket(`ws://${this.config.host}:${parseInt(this.config.port)}${channel.streamEndpoint}`)
+		} catch (e) {
+			this.log('warn', `SPL stream failed for ${channel.channelName}: ${e.message}`)
+			return
+		}
+		this.splStreams.set(key, stream)
+
+		stream.addEventListener('open', () => {
+			if (this.splStreams.get(key) !== stream) return
+			stream.send(JSON.stringify({ action: 'set', properties: [{ targetFPS: this.config.splFPS ?? 2 }] }))
+		})
+
+		stream.addEventListener('message', (message) => {
+			if (this.splStreams.get(key) !== stream) return
+			let msg
+			try {
+				msg = JSON.parse(message.data)
+			} catch (_e) {
+				return
+			}
+			if (!Array.isArray(msg.metrics)) return
+			this.state.splValues[key] = parseMetrics(msg.metrics)
+			this.publishSpl(key)
+		})
+
+		stream.addEventListener('close', () => {
+			if (this.splStreams.get(key) === stream) this.splStreams.delete(key)
+		})
+
+		stream.addEventListener('error', () => {
+			this.log('debug', `SPL stream error for ${channel.channelName}`)
+		})
+	}
+
+	publishSpl(key) {
+		const channel = this.state.splChannels.find((c) => c.key === key)
+		const values = this.state.splValues[key]
+		if (!channel || !values) return
+		const updates = {}
+		for (const [metric, value] of Object.entries(values)) {
+			if (!Number.isFinite(value)) continue
+			updates[`${metricSlug(metric)}_${variableId(channel.key)}`] = value.toFixed(1)
+		}
+		this.publishedIds = [...new Set([...(this.publishedIds ?? []), ...Object.keys(updates)])]
+		this.setVariableValues(updates)
+		this.checkFeedbacks('splAbove', 'splZone', 'splAlarm')
+	}
+
+	splChannelChoices() {
+		return this.state.splChannels.map((c) => ({
+			id: c.key,
+			label: `${c.channelName} (${c.deviceName})`,
+		}))
+	}
+
+	splMetricChoices() {
+		return this.state.splMetrics.map((m) => ({ id: m, label: m }))
+	}
+
+	splValue(channelKey, metric) {
+		return this.state.splValues[channelKey]?.[metric]
 	}
 
 	publishState() {
@@ -265,6 +400,14 @@ class SmaartInstance extends InstanceBase {
 			values[`measurement_${variableId(m.measurementName)}_active`] = m.active ? 'On' : 'Off'
 			if (m.type === 'transfer function' && this.state.delays[m.measurementName] !== undefined) {
 				values[`delay_${variableId(m.measurementName)}`] = this.state.delays[m.measurementName].toFixed(2)
+			}
+		}
+		for (const channel of this.state.splChannels) {
+			const metrics = this.state.splValues[channel.key]
+			if (!metrics) continue
+			for (const [metric, value] of Object.entries(metrics)) {
+				if (!Number.isFinite(value)) continue
+				values[`${metricSlug(metric)}_${variableId(channel.key)}`] = value.toFixed(1)
 			}
 		}
 		if (this.publishedIds) {

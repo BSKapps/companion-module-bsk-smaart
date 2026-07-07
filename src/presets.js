@@ -1,4 +1,5 @@
 const { combineRgb } = require('@companion-module/base')
+const { variableId, metricSlug } = require('./api')
 
 const WHITE = combineRgb(255, 255, 255)
 const BLACK = combineRgb(0, 0, 0)
@@ -67,6 +68,51 @@ module.exports = function updatePresets(self) {
 	presets.viewMulti = button('Views', 'Multi-Spectrum View', 'MULTI\\nSPEC', 'selectViewPreset', { viewPreset: '0' })
 	presets.realTime = button('Views', 'Real-Time Mode', 'RTA\\nMODE', 'realTimeMode')
 	presets.impulse = button('Views', 'Impulse Mode', 'IR\\nMODE', 'impulseMode')
+
+	const splChannel = self.state.splChannels[0]
+	if (splChannel) {
+		const chanSlug = variableId(splChannel.key)
+		for (const metric of ['SPL A Slow', 'LAeq 15', 'Peak C']) {
+			const slug = metricSlug(metric)
+			presets[`spl_${slug}`] = {
+				category: 'SPL',
+				name: `${metric} readout`,
+				type: 'button',
+				style: {
+					text: `${metric}\\n$(${self.label}:${slug}_${chanSlug})`,
+					size: '14',
+					color: WHITE,
+					bgcolor: BLACK,
+				},
+				steps: [{ down: [], up: [] }],
+				feedbacks: [
+					{
+						feedbackId: 'splZone',
+						options: { channel: splChannel.key, metric },
+					},
+				],
+			}
+		}
+		presets.splAlarm = {
+			category: 'SPL',
+			name: 'SPL alarm',
+			type: 'button',
+			style: {
+				text: `ALARM\\n$(${self.label}:peak_c_${chanSlug})`,
+				size: '14',
+				color: WHITE,
+				bgcolor: BLACK,
+			},
+			steps: [{ down: [], up: [] }],
+			feedbacks: [
+				{
+					feedbackId: 'splAlarm',
+					options: { channel: splChannel.key },
+					style: { bgcolor: combineRgb(200, 0, 0), color: WHITE },
+				},
+			],
+		}
+	}
 
 	presets.hideTrace = button('Traces', 'Hide Trace', 'HIDE', 'hideTrace')
 	presets.hideAll = button('Traces', 'Hide All Traces', 'HIDE\\nALL', 'hideAllTraces')
