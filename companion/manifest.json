@@ -1,9 +1,9 @@
 {
 	"id": "bsk-smaart",
 	"name": "BSK Apps: Smaart Control",
-	"shortname": "Smaart Control",
+	"shortname": "bsk-smaart",
 	"description": "Control Rational Acoustics Smaart V9 over the Smaart API: generator, measurements, capture, delay tracking, views and display toggles. Live SPL metering and feedbacks on Smaart Suite and Smaart SPL editions.",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"license": "MIT",
 	"repository": "https://github.com/BSKapps/companion-module-bsk-smaart",
 	"bugs": "https://github.com/BSKapps/companion-module-bsk-smaart/issues",
@@ -20,8 +20,8 @@
 		"apiVersion": "0.0.0",
 		"entrypoint": "../main.js"
 	},
-	"manufacturer": "Rational Acoustics",
-	"products": ["Smaart Suite V9", "Smaart SPL V9", "Smaart RT V9", "Smaart LE V9"],
+	"manufacturer": "BSK Apps",
+	"products": ["Smaart Control"],
 	"keywords": ["Audio", "Smaart", "Measurement", "SPL"],
 	"isPrerelease": false
 }

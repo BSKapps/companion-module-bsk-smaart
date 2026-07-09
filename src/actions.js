@@ -59,6 +59,13 @@ module.exports = function updateActions(self) {
 				await self.setGenerator(true)
 			},
 		},
+		toggleGenerator: {
+			name: 'Toggle Signal Generator',
+			options: [],
+			callback: async () => {
+				await self.toggleGenerator()
+			},
+		},
 		stopGenerator: {
 			name: 'Stop Signal Generator',
 			options: [],
@@ -158,6 +165,13 @@ module.exports = function updateActions(self) {
 			options: [],
 			callback: async () => {
 				await self.setTrackingAll(false)
+			},
+		},
+		toggleTrackingAll: {
+			name: 'Toggle Delay Tracking (all TF measurements)',
+			options: [],
+			callback: async () => {
+				await self.toggleTrackingAll()
 			},
 		},
 		setTracking: {

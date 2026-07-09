@@ -515,6 +515,10 @@ class SmaartInstance extends InstanceBase {
 		await this.poll()
 	}
 
+	async toggleGenerator() {
+		await this.setGenerator(!(this.state.generator.active === true))
+	}
+
 	async setGeneratorLevel(gain) {
 		await this.request(buildSet('signalGenerator', { gain: clampGain(gain) }))
 		await this.poll()
@@ -546,6 +550,11 @@ class SmaartInstance extends InstanceBase {
 	async setTrackingAll(trackingDelay) {
 		await this.request(buildSet({ measurementName: 'allTransferFunctionMeasurements' }, { trackingDelay }))
 		await this.poll()
+	}
+
+	async toggleTrackingAll() {
+		const any = this.state.measurements.some((m) => m.type === 'transfer function' && m.trackingDelay === true)
+		await this.setTrackingAll(!any)
 	}
 
 	async setTracking(measurementName, trackingDelay) {

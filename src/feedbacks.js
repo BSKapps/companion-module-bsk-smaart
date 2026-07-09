@@ -112,6 +112,16 @@ module.exports = function updateFeedbacks(self) {
 			options: [],
 			callback: () => self.state.measurements.some((m) => m.active),
 		},
+		anyTrackingActive: {
+			type: 'boolean',
+			name: 'Any Delay Tracking Running',
+			defaultStyle: {
+				bgcolor: combineRgb(0, 110, 210),
+				color: combineRgb(255, 255, 255),
+			},
+			options: [],
+			callback: () => self.state.measurements.some((m) => m.type === 'transfer function' && m.trackingDelay === true),
+		},
 		splLoggingActive: {
 			type: 'boolean',
 			name: 'SPL Logging Running',
