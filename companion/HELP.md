@@ -56,4 +56,4 @@ The "SPL A Slow, tap to start/stop logging" preset is a single self-contained bu
 
 Actions that change what is drawn on screen (views, zoom, toggles) act on the active Smaart window, same as pressing the hotkey in Smaart.
 
-The TF/Spectrum and RTA/Impulse presets alternate on each press. The API does not report which view or mode is currently showing, so if you switch views in Smaart itself, the button's next press sends the other command; press it again to re-sync.
+The TF/RTA preset alternates on each press. The API does not report which view is currently showing, so if you switch views in Smaart itself, the button's next press sends the other command; press it again to re-sync.

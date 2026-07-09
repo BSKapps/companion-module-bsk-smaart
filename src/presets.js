@@ -164,9 +164,10 @@ module.exports = function updatePresets(self) {
 		bgcolor: COLOR.bar,
 	})
 
-	presets.viewSpectrum = preset('Views', 'Spectrum View', 'SPEC', 'selectViewPreset', {
+	presets.viewSpectrum = preset('Views', 'RTA (Spectrum) View', 'RTA', 'selectViewPreset', {
 		options: { viewPreset: 'S' },
-		bgcolor: COLOR.view,
+		bgcolor: COLOR.rta,
+		color: BLACK,
 	})
 	presets.viewTransfer = preset('Views', 'Transfer View', 'TF', 'selectViewPreset', {
 		options: { viewPreset: 'T' },
@@ -176,27 +177,16 @@ module.exports = function updatePresets(self) {
 		options: { viewPreset: '0' },
 		bgcolor: COLOR.view,
 	})
-	presets.realTime = preset('Views', 'Real-Time Mode', 'RTA', 'realTimeMode', { bgcolor: COLOR.rta, color: BLACK })
-	presets.impulse = preset('Views', 'Impulse Mode', 'IR', 'impulseMode', { bgcolor: COLOR.view })
+	presets.realTime = preset('Views', 'Real-Time Mode', 'RT\\nMODE', 'realTimeMode', { bgcolor: COLOR.view })
+	presets.impulse = preset('Views', 'Impulse Mode', 'IR\\nMODE', 'impulseMode', { bgcolor: COLOR.view })
 	presets.viewFlip = {
 		category: 'Views',
-		name: 'TF/Spectrum view (alternates each press)',
+		name: 'TF/RTA view (alternates each press)',
 		type: 'button',
-		style: { text: 'TF /\\nSPEC', size: '14', color: WHITE, bgcolor: COLOR.transfer },
+		style: { text: 'TF /\\nRTA', size: '14', color: WHITE, bgcolor: COLOR.transfer },
 		steps: [
 			{ down: [{ actionId: 'selectViewPreset', options: { viewPreset: 'T' } }], up: [] },
 			{ down: [{ actionId: 'selectViewPreset', options: { viewPreset: 'S' } }], up: [] },
-		],
-		feedbacks: [],
-	}
-	presets.modeFlip = {
-		category: 'Views',
-		name: 'RTA/Impulse mode (alternates each press)',
-		type: 'button',
-		style: { text: 'RTA /\\nIR', size: '14', color: BLACK, bgcolor: COLOR.rta },
-		steps: [
-			{ down: [{ actionId: 'realTimeMode', options: {} }], up: [] },
-			{ down: [{ actionId: 'impulseMode', options: {} }], up: [] },
 		],
 		feedbacks: [],
 	}
