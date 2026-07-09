@@ -112,6 +112,26 @@ module.exports = function updateFeedbacks(self) {
 			options: [],
 			callback: () => self.state.measurements.some((m) => m.active),
 		},
+		anyTFActive: {
+			type: 'boolean',
+			name: 'Any Transfer Function Running',
+			defaultStyle: {
+				bgcolor: combineRgb(0, 165, 10),
+				color: combineRgb(255, 255, 255),
+			},
+			options: [],
+			callback: () => self.state.measurements.some((m) => m.type === 'transfer function' && m.active),
+		},
+		anySpectrumActive: {
+			type: 'boolean',
+			name: 'Any Spectrum Measurement Running',
+			defaultStyle: {
+				bgcolor: combineRgb(0, 165, 10),
+				color: combineRgb(255, 255, 255),
+			},
+			options: [],
+			callback: () => self.state.measurements.some((m) => m.type === 'spectrum' && m.active),
+		},
 		anyTrackingActive: {
 			type: 'boolean',
 			name: 'Any Delay Tracking Running',

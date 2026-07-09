@@ -58,8 +58,24 @@ function buildRenameTrace(traceFilePath, name) {
 	return { action: 'set', target: { traceFilePath }, properties: [{ name }] }
 }
 
+function buildFindDelay(measurementName, opts = {}) {
+	return {
+		action: 'findDelay',
+		target: { measurementName },
+		properties: [
+			{ automaticallyStart: opts.automaticallyStart === true },
+			{ automaticallyInsert: opts.automaticallyInsert === true },
+			{ automaticallyStop: opts.automaticallyStop === true },
+		],
+	}
+}
+
 function clampGain(gain) {
 	return Math.max(-200, Math.min(0, gain))
+}
+
+function clampDelay(delay) {
+	return Math.max(0, Math.min(1000, delay))
 }
 
 function variableId(measurementName) {
@@ -143,7 +159,9 @@ module.exports = {
 	buildCapture,
 	buildKeypress,
 	buildRenameTrace,
+	buildFindDelay,
 	clampGain,
+	clampDelay,
 	variableId,
 	metricSlug,
 	parseMetrics,

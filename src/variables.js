@@ -9,6 +9,7 @@ module.exports = function updateVariables(self) {
 		{ variableId: 'generator_type', name: 'Signal generator type' },
 		{ variableId: 'active_measurements', name: 'Number of running measurements' },
 		{ variableId: 'spl_logging', name: 'SPL logging state' },
+		{ variableId: 'last_trace_path', name: 'Last captured trace file path' },
 	]
 
 	for (const m of self.state.measurements) {
@@ -17,6 +18,10 @@ module.exports = function updateVariables(self) {
 			name: `${m.measurementName} running`,
 		})
 		if (m.type === 'transfer function') {
+			definitions.push({
+				variableId: `measurement_${variableId(m.measurementName)}_tracking`,
+				name: `${m.measurementName} delay tracking`,
+			})
 			definitions.push({
 				variableId: `delay_${variableId(m.measurementName)}`,
 				name: `${m.measurementName} delay (ms)`,

@@ -174,6 +174,76 @@ module.exports = function updateActions(self) {
 				await self.toggleTrackingAll()
 			},
 		},
+		toggleMeasurementGroup: {
+			name: 'Toggle Measurement Group (stop if any running, else start)',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Group',
+					id: 'group',
+					default: 'allTransferFunctionMeasurements',
+					choices: [
+						{ id: 'allTransferFunctionMeasurements', label: 'All transfer functions' },
+						{ id: 'allSpectrumMeasurements', label: 'All spectrum measurements' },
+						{ id: 'allMeasurements', label: 'All measurements' },
+					],
+				},
+			],
+			callback: async (action) => {
+				await self.toggleMeasurementGroup(action.options.group)
+			},
+		},
+		findDelay: {
+			name: 'Find Delay (transfer function)',
+			options: [
+				measurementOption('Measurement', 'transfer function'),
+				{
+					type: 'checkbox',
+					label: 'Start measurement automatically',
+					id: 'automaticallyStart',
+					default: true,
+				},
+				{
+					type: 'checkbox',
+					label: 'Insert found delay',
+					id: 'automaticallyInsert',
+					default: true,
+				},
+				{
+					type: 'checkbox',
+					label: 'Stop measurement afterwards',
+					id: 'automaticallyStop',
+					default: false,
+				},
+			],
+			callback: async (action, context) => {
+				const name = await context.parseVariablesInString(action.options.measurement)
+				await self.findDelay(name, {
+					automaticallyStart: action.options.automaticallyStart,
+					automaticallyInsert: action.options.automaticallyInsert,
+					automaticallyStop: action.options.automaticallyStop,
+				})
+			},
+		},
+		setDelay: {
+			name: 'Set Delay (transfer function)',
+			options: [
+				measurementOption('Measurement', 'transfer function'),
+				{
+					type: 'number',
+					label: 'Delay (ms, 0-1000)',
+					id: 'delay',
+					min: 0,
+					max: 1000,
+					default: 0,
+					required: true,
+				},
+			],
+			callback: async (action, context) => {
+				const name = await context.parseVariablesInString(action.options.measurement)
+				await self.setDelay(name, action.options.delay)
+			},
+		},
 		setTracking: {
 			name: 'Start/Stop Delay Tracking (one measurement)',
 			options: [

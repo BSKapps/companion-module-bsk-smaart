@@ -6,7 +6,9 @@ const {
 	buildCapture,
 	buildKeypress,
 	buildRenameTrace,
+	buildFindDelay,
 	clampGain,
+	clampDelay,
 	variableId,
 	metricSlug,
 	parseMetrics,
@@ -66,6 +68,22 @@ describe('payload builders', () => {
 			properties: [{ name: 'FOH-A' }],
 		})
 	})
+
+	test('find delay with options', () => {
+		expect(buildFindDelay('EQ', { automaticallyStart: true, automaticallyInsert: true })).toEqual({
+			action: 'findDelay',
+			target: { measurementName: 'EQ' },
+			properties: [{ automaticallyStart: true }, { automaticallyInsert: true }, { automaticallyStop: false }],
+		})
+	})
+
+	test('find delay defaults all off', () => {
+		expect(buildFindDelay('EQ')).toEqual({
+			action: 'findDelay',
+			target: { measurementName: 'EQ' },
+			properties: [{ automaticallyStart: false }, { automaticallyInsert: false }, { automaticallyStop: false }],
+		})
+	})
 })
 
 describe('clampGain', () => {
@@ -77,6 +95,18 @@ describe('clampGain', () => {
 	})
 	test('passes normal values', () => {
 		expect(clampGain(-18)).toBe(-18)
+	})
+})
+
+describe('clampDelay', () => {
+	test('clamps below 0', () => {
+		expect(clampDelay(-5)).toBe(0)
+	})
+	test('clamps above 1000', () => {
+		expect(clampDelay(2000)).toBe(1000)
+	})
+	test('passes normal values', () => {
+		expect(clampDelay(21.3)).toBe(21.3)
 	})
 })
 

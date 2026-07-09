@@ -7,7 +7,9 @@ const {
 	buildCapture,
 	buildKeypress,
 	buildRenameTrace,
+	buildFindDelay,
 	clampGain,
+	clampDelay,
 	variableId,
 	metricSlug,
 	parseMetrics,
@@ -406,11 +408,15 @@ class SmaartInstance extends InstanceBase {
 			generator_type: this.state.generator.type ?? '',
 			active_measurements: this.state.measurements.filter((m) => m.active).length,
 			spl_logging: this.splLoggingActive() ? 'On' : 'Off',
+			last_trace_path: this.state.lastTracePath ?? '',
 		}
 		for (const m of this.state.measurements) {
 			values[`measurement_${variableId(m.measurementName)}_active`] = m.active ? 'On' : 'Off'
-			if (m.type === 'transfer function' && this.state.delays[m.measurementName] !== undefined) {
-				values[`delay_${variableId(m.measurementName)}`] = this.state.delays[m.measurementName].toFixed(2)
+			if (m.type === 'transfer function') {
+				values[`measurement_${variableId(m.measurementName)}_tracking`] = m.trackingDelay ? 'On' : 'Off'
+				if (this.state.delays[m.measurementName] !== undefined) {
+					values[`delay_${variableId(m.measurementName)}`] = this.state.delays[m.measurementName].toFixed(2)
+				}
 			}
 		}
 		for (const channel of this.state.splChannels) {
@@ -557,13 +563,41 @@ class SmaartInstance extends InstanceBase {
 		await this.setTrackingAll(!any)
 	}
 
+	async toggleMeasurementGroup(group) {
+		let any
+		if (group === 'allTransferFunctionMeasurements') {
+			any = this.state.measurements.some((m) => m.type === 'transfer function' && m.active)
+		} else if (group === 'allSpectrumMeasurements') {
+			any = this.state.measurements.some((m) => m.type === 'spectrum' && m.active)
+		} else {
+			any = this.state.measurements.some((m) => m.active)
+		}
+		await this.setMeasurementActive(group, !any)
+	}
+
+	async findDelay(measurementName, opts) {
+		await this.request(buildFindDelay(measurementName, opts))
+		await this.poll()
+	}
+
+	async setDelay(measurementName, delay) {
+		await this.request(buildSet({ measurementName }, { delay: clampDelay(delay) }))
+		await this.poll()
+	}
+
 	async setTracking(measurementName, trackingDelay) {
 		await this.request(buildSet({ measurementName }, { trackingDelay }))
 		await this.poll()
 	}
 
 	async captureTrace(measurementName) {
-		await this.request(buildCapture(measurementName))
+		const response = await this.request(buildCapture(measurementName))
+		if (response?.traceFilePath) {
+			this.state.lastTracePath = response.traceFilePath
+		} else if (Array.isArray(response?.traceFiles) && response.traceFiles.length > 0) {
+			this.state.lastTracePath = response.traceFiles[response.traceFiles.length - 1].traceFilePath
+		}
+		this.setVariableValues({ last_trace_path: this.state.lastTracePath ?? '' })
 	}
 
 	async renameTrace(traceFilePath, name) {

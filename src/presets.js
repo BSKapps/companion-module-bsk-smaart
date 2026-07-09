@@ -75,6 +75,40 @@ module.exports = function updatePresets(self) {
 			},
 		],
 	})
+	presets.runTFsToggle = preset('Measurements', 'Run TFs On/Off (toggle)', 'RUN\\nTFs', 'toggleMeasurementGroup', {
+		options: { group: 'allTransferFunctionMeasurements' },
+		bgcolor: COLOR.measure,
+		feedbacks: [{ feedbackId: 'anyTFActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
+	})
+	presets.runSpecToggle = preset(
+		'Measurements',
+		'Run Spectrum On/Off (toggle)',
+		'RUN\\nSPEC',
+		'toggleMeasurementGroup',
+		{
+			options: { group: 'allSpectrumMeasurements' },
+			bgcolor: COLOR.measure,
+			feedbacks: [{ feedbackId: 'anySpectrumActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
+		},
+	)
+	presets.startTFs = preset('Measurements', 'Start All Transfer Functions', 'TFs\\nON', 'setMeasurementActive', {
+		options: { measurement: 'allTransferFunctionMeasurements', state: 'on' },
+		bgcolor: COLOR.measure,
+		feedbacks: [{ feedbackId: 'anyTFActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
+	})
+	presets.stopTFs = preset('Measurements', 'Stop All Transfer Functions', 'TFs\\nOFF', 'setMeasurementActive', {
+		options: { measurement: 'allTransferFunctionMeasurements', state: 'off' },
+		bgcolor: COLOR.measure,
+	})
+	presets.startSpec = preset('Measurements', 'Start All Spectrum Measurements', 'SPEC\\nON', 'setMeasurementActive', {
+		options: { measurement: 'allSpectrumMeasurements', state: 'on' },
+		bgcolor: COLOR.measure,
+		feedbacks: [{ feedbackId: 'anySpectrumActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
+	})
+	presets.stopSpec = preset('Measurements', 'Stop All Spectrum Measurements', 'SPEC\\nOFF', 'setMeasurementActive', {
+		options: { measurement: 'allSpectrumMeasurements', state: 'off' },
+		bgcolor: COLOR.measure,
+	})
 	presets.startAll = preset('Measurements', 'Run All Measurements', 'RUN\\nALL', 'startAllMeasurements', {
 		bgcolor: COLOR.measure,
 		feedbacks: [{ feedbackId: 'anyMeasurementActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
@@ -93,6 +127,15 @@ module.exports = function updatePresets(self) {
 		feedbacks: [{ feedbackId: 'anyTrackingActive', options: {}, style: { bgcolor: COLOR.trackOn, color: WHITE } }],
 	})
 	presets.trackAllStop = preset('Delay', 'Stop Delay Tracking', 'TRACK\\nOFF', 'stopTrackingAll', {
+		bgcolor: COLOR.track,
+	})
+	presets.findDelay = preset('Delay', 'Find Delay (pick a TF measurement)', 'FIND\\nDELAY', 'findDelay', {
+		options: {
+			measurement: self.measurementChoices('transfer function')[0]?.id ?? '',
+			automaticallyStart: true,
+			automaticallyInsert: true,
+			automaticallyStop: false,
+		},
 		bgcolor: COLOR.track,
 	})
 
@@ -135,6 +178,28 @@ module.exports = function updatePresets(self) {
 	})
 	presets.realTime = preset('Views', 'Real-Time Mode', 'RTA', 'realTimeMode', { bgcolor: COLOR.rta, color: BLACK })
 	presets.impulse = preset('Views', 'Impulse Mode', 'IR', 'impulseMode', { bgcolor: COLOR.view })
+	presets.viewFlip = {
+		category: 'Views',
+		name: 'TF/Spectrum view (alternates each press)',
+		type: 'button',
+		style: { text: 'TF /\\nSPEC', size: '14', color: WHITE, bgcolor: COLOR.transfer },
+		steps: [
+			{ down: [{ actionId: 'selectViewPreset', options: { viewPreset: 'T' } }], up: [] },
+			{ down: [{ actionId: 'selectViewPreset', options: { viewPreset: 'S' } }], up: [] },
+		],
+		feedbacks: [],
+	}
+	presets.modeFlip = {
+		category: 'Views',
+		name: 'RTA/Impulse mode (alternates each press)',
+		type: 'button',
+		style: { text: 'RTA /\\nIR', size: '14', color: BLACK, bgcolor: COLOR.rta },
+		steps: [
+			{ down: [{ actionId: 'realTimeMode', options: {} }], up: [] },
+			{ down: [{ actionId: 'impulseMode', options: {} }], up: [] },
+		],
+		feedbacks: [],
+	}
 
 	for (const n of ['1', '2', '3', '4']) {
 		presets[`zoom${n}`] = preset('Zoom', `Zoom Preset ${n}`, `ZOOM\\n${n}`, 'setZoomPreset', {
@@ -169,6 +234,18 @@ module.exports = function updatePresets(self) {
 
 	presets.captureTrace = preset('Traces', 'Capture Trace', 'CAP\\nTURE', 'captureTrace', {
 		options: { measurement: firstMeasurement },
+		bgcolor: COLOR.capture,
+	})
+	presets.captureAll = preset('Traces', 'Capture All Active Measurements', 'CAP\\nALL', 'captureTrace', {
+		options: { measurement: 'allMeasurements' },
+		bgcolor: COLOR.capture,
+	})
+	presets.captureTFs = preset('Traces', 'Capture All Active Transfer Functions', 'CAP\\nTFs', 'captureTrace', {
+		options: { measurement: 'allTransferFunctionMeasurements' },
+		bgcolor: COLOR.capture,
+	})
+	presets.captureSpec = preset('Traces', 'Capture All Active Spectrum Measurements', 'CAP\\nSPEC', 'captureTrace', {
+		options: { measurement: 'allSpectrumMeasurements' },
 		bgcolor: COLOR.capture,
 	})
 	presets.hideTrace = preset('Traces', 'Hide Trace', 'HIDE', 'hideTrace', { bgcolor: COLOR.view })

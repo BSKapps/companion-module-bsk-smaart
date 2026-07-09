@@ -12,10 +12,12 @@ Smaart does not need to be the front application. Commands go over the network, 
 
 ## Actions
 
-- Capture Trace: captures the selected measurement, no focus needed. Rename Trace can rename a captured trace file afterwards.
-- Signal generator: start, stop, set level, and adjust level up or down in dB steps.
-- Measurements: start or stop all measurements, or start/stop/toggle a single measurement picked from a list read live from Smaart.
-- Delay tracking: start or stop for all transfer function measurements or a single one.
+- Capture Trace: captures the selected measurement, or all active measurements using the group names, no focus needed. The captured file path lands in the last captured trace variable, so Rename Trace can rename it afterwards.
+- Signal generator: start, stop, toggle, set level, and adjust level up or down in dB steps.
+- Measurements: start or stop all measurements, toggle a group (all transfer functions, all spectrum, or everything), or start/stop/toggle a single measurement picked from a list read live from Smaart.
+- Delay tracking: start, stop, or toggle for all transfer function measurements or a single one.
+- Find Delay: runs Smaart's delay finder on a transfer function measurement, with options to start the measurement automatically, insert the found delay, and stop afterwards.
+- Set Delay: sets a transfer function measurement's delay in ms directly.
 - Reset Averages.
 - SPL Logging Start/Stop: starts, stops, or toggles SPL logging, which is what makes the live SPL variables available.
 - Display toggles: target curves, coherence, peak hold, SPL meters, SPL mode, input meters, clock/SPL meter, bars.
@@ -35,8 +37,8 @@ The "SPL A Slow, tap to start/stop logging" preset is a single self-contained bu
 ## Feedbacks
 
 - Signal Generator Running: button lights while the generator is on.
-- Measurement Running / Any Measurement Running.
-- Delay Tracking Running.
+- Measurement Running / Any Measurement Running / Any Transfer Function Running / Any Spectrum Measurement Running.
+- Delay Tracking Running / Any Delay Tracking Running.
 - SPL Above Level: lights when a chosen metric on a chosen channel reaches a level you set.
 - SPL Zone Colour: colours the button green/yellow/red using the thresholds configured in Smaart.
 - SPL Alarm Level Reached: lights when a channel hits an alarm level configured in Smaart.
@@ -46,9 +48,12 @@ The "SPL A Slow, tap to start/stop logging" preset is a single self-contained bu
 - Smaart application name and version.
 - Generator state, level, and signal type.
 - Number of running measurements.
-- Per measurement: running state, and delay in ms for transfer function measurements.
+- Last captured trace file path, filled in by Capture Trace and usable with Rename Trace.
+- Per measurement: running state, plus delay tracking state and delay in ms for transfer function measurements.
 - Per calibrated channel while SPL logging runs: all SPL meter metrics listed above.
 
 ## Notes
 
 Actions that change what is drawn on screen (views, zoom, toggles) act on the active Smaart window, same as pressing the hotkey in Smaart.
+
+The TF/Spectrum and RTA/Impulse presets alternate on each press. The API does not report which view or mode is currently showing, so if you switch views in Smaart itself, the button's next press sends the other command; press it again to re-sync.
