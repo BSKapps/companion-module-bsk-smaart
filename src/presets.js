@@ -289,33 +289,35 @@ module.exports = function updatePresets(self) {
 		const metrics = self.state.splMetrics.length ? self.state.splMetrics : ['SPL A Slow', 'LAeq 15', 'Peak C']
 		for (const metric of metrics) {
 			const slug = metricSlug(metric)
+			const label = metric.replace(/^Exposure /, 'Exp ')
+			const zone = () => ({ feedbackId: 'splZone', options: { channel: splChannel.key, metric } })
 			presets[`spl_${slug}`] = {
 				category: 'SPL',
 				name: `${metric} readout`,
 				type: 'button',
 				style: {
-					text: `${metric}\\n$(${self.label}:${slug}_${chanSlug})`,
-					size: '14',
+					text: `${label}\\n$(${self.label}:${slug}_${chanSlug})`,
+					size: '18',
 					color: WHITE,
 					bgcolor: BLACK,
 				},
 				steps: [{ down: [], up: [] }],
-				feedbacks: [{ feedbackId: 'splZone', options: { channel: splChannel.key, metric } }],
+				feedbacks: [zone()],
 			}
-		}
-		presets.splTapToLog = {
-			category: 'SPL',
-			name: 'SPL A Slow, tap to start/stop logging',
-			type: 'button',
-			style: {
-				text: `\`SPL A\n\${$(${self.label}:spl_logging) == 'On' ? $(${self.label}:spl_a_slow_${chanSlug}) : 'START'}\``,
-				textExpression: true,
-				size: '18',
-				color: WHITE,
-				bgcolor: BLACK,
-			},
-			steps: [{ down: [{ actionId: 'splLogging', options: { state: 'toggle' } }], up: [] }],
-			feedbacks: [{ feedbackId: 'splZone', options: { channel: splChannel.key, metric: 'SPL A Slow' } }],
+			presets[`spl_${slug}_tap`] = {
+				category: 'SPL',
+				name: `${metric}, tap to start/stop logging`,
+				type: 'button',
+				style: {
+					text: `\`${label}\n\${$(${self.label}:spl_logging) == 'On' ? $(${self.label}:${slug}_${chanSlug}) : 'START'}\``,
+					textExpression: true,
+					size: '18',
+					color: WHITE,
+					bgcolor: BLACK,
+				},
+				steps: [{ down: [{ actionId: 'splLogging', options: { state: 'toggle' } }], up: [] }],
+				feedbacks: [zone()],
+			}
 		}
 		presets.splAlarm = {
 			category: 'SPL',
@@ -323,7 +325,7 @@ module.exports = function updatePresets(self) {
 			type: 'button',
 			style: {
 				text: `ALARM\\n$(${self.label}:peak_c_${chanSlug})`,
-				size: '14',
+				size: '18',
 				color: WHITE,
 				bgcolor: BLACK,
 			},
