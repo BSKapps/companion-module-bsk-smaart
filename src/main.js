@@ -15,6 +15,7 @@ const {
 	parseMetrics,
 	parseViolations,
 	viewPresetChoices,
+	shortMetricLabel,
 	flattenCalibratedChannels,
 	thresholdsByMetric,
 	flattenMeasurements,
@@ -450,7 +451,7 @@ class SmaartInstance extends InstanceBase {
 		}
 		const cycleMetric = this.state.splCycleMetric
 		if (cycleMetric) {
-			values.spl_cycle_metric = cycleMetric
+			values.spl_cycle_metric = shortMetricLabel(cycleMetric)
 			const cycleValue = this.splValue(this.splPresetChannel()?.key, cycleMetric)
 			if (Number.isFinite(cycleValue)) values.spl_cycle_value = cycleValue.toFixed(1)
 		}

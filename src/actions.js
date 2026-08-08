@@ -271,6 +271,8 @@ module.exports = function updateActions(self) {
 					type: 'multidropdown',
 					label: 'Metrics to cycle',
 					id: 'metrics',
+					tooltip:
+						'Each press steps to the next metric in this list. Drives the spl_cycle_metric and spl_cycle_value variables and the cycling zone colour feedback.',
 					default: ['SPL A Slow', 'SPL C Slow', 'Leq 15'],
 					choices: self.splMetricChoices(),
 				},
@@ -287,6 +289,8 @@ module.exports = function updateActions(self) {
 					label: 'State',
 					id: 'state',
 					default: 'toggle',
+					tooltip:
+						'Smaart only offers a toggle, so Start and Stop check the current state first and do nothing if logging is already that way. SPL readouts only carry data while logging runs.',
 					choices: [
 						{ id: 'on', label: 'Start' },
 						{ id: 'off', label: 'Stop' },
@@ -299,7 +303,7 @@ module.exports = function updateActions(self) {
 			},
 		},
 		clearDbOffset: {
-			name: 'Clear dB Offset (front trace)',
+			name: 'Clear dB Offset (front trace only)',
 			options: [],
 			callback: async () => {
 				await self.issueCommand('Y')
@@ -320,6 +324,7 @@ module.exports = function updateActions(self) {
 					label: 'Direction',
 					id: 'direction',
 					default: 'up',
+					tooltip: 'Nudges the dB offset of the front (top) trace only, the same as the dB +/- buttons in Smaart',
 					choices: [
 						{ id: 'up', label: 'Up' },
 						{ id: 'down', label: 'Down' },
@@ -331,7 +336,7 @@ module.exports = function updateActions(self) {
 			},
 		},
 		toggleDataSplBar: {
-			name: 'Toggle Data/SPL Meter Bar',
+			name: 'Toggle Data / SPL Meter Bar',
 			options: [],
 			callback: async () => {
 				await self.issueCommand('option + E')
@@ -345,14 +350,14 @@ module.exports = function updateActions(self) {
 			},
 		},
 		targetCurvesDialog: {
-			name: 'Target Curves Dialog',
+			name: 'Open Target Curves Dialog (picker)',
 			options: [],
 			callback: async () => {
 				await self.issueCommand('option + X')
 			},
 		},
 		showTargetCurves: {
-			name: 'Toggle Target Curves',
+			name: 'Show/Hide Target Curves',
 			options: [],
 			callback: async () => {
 				await self.issueCommand('X')

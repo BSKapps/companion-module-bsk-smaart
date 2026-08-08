@@ -158,6 +158,12 @@ const VIEW_PRESET_FALLBACK = [
 	{ id: '0', label: 'Multi-Spectrum' },
 ]
 
+function shortMetricLabel(metric) {
+	return String(metric ?? '')
+		.replace(/^SPL /, '')
+		.replace(/^Exposure /, 'Exp ')
+}
+
 function viewPresetChoices(commands) {
 	const named = new Map()
 	for (const c of commands ?? []) {
@@ -175,6 +181,7 @@ module.exports = {
 	errors,
 	lookupError,
 	viewPresetChoices,
+	shortMetricLabel,
 	buildGet,
 	buildSet,
 	buildAuth,

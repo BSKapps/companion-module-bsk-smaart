@@ -1,5 +1,5 @@
 const { combineRgb } = require('@companion-module/base')
-const { variableId, metricSlug } = require('./api')
+const { variableId, metricSlug, shortMetricLabel } = require('./api')
 
 const WHITE = combineRgb(255, 255, 255)
 const BLACK = combineRgb(0, 0, 0)
@@ -289,7 +289,7 @@ module.exports = function updatePresets(self) {
 		const metrics = self.state.splMetrics.length ? self.state.splMetrics : ['SPL A Slow', 'LAeq 15', 'Peak C']
 		for (const metric of metrics) {
 			const slug = metricSlug(metric)
-			const label = metric.replace(/^Exposure /, 'Exp ')
+			const label = shortMetricLabel(metric)
 			const zone = () => ({ feedbackId: 'splZone', options: { channel: splChannel.key, metric } })
 			presets[`spl_${slug}`] = {
 				category: 'SPL',
@@ -297,7 +297,7 @@ module.exports = function updatePresets(self) {
 				type: 'button',
 				style: {
 					text: `${label}\\n$(${self.label}:${slug}_${chanSlug})`,
-					size: '18',
+					size: '24',
 					color: WHITE,
 					bgcolor: BLACK,
 				},
@@ -311,7 +311,7 @@ module.exports = function updatePresets(self) {
 				style: {
 					text: `\`${label}\n\${$(${self.label}:spl_logging) == 'On' ? $(${self.label}:${slug}_${chanSlug}) : 'START'}\``,
 					textExpression: true,
-					size: '18',
+					size: '24',
 					color: WHITE,
 					bgcolor: BLACK,
 				},
@@ -326,7 +326,7 @@ module.exports = function updatePresets(self) {
 			style: {
 				text: `$(${self.label}:spl_cycle_metric) == '' ? 'CYCLE' : \`\${$(${self.label}:spl_cycle_metric)}\n\${$(${self.label}:spl_cycle_value)}\``,
 				textExpression: true,
-				size: '18',
+				size: '24',
 				color: WHITE,
 				bgcolor: BLACK,
 			},
@@ -344,7 +344,7 @@ module.exports = function updatePresets(self) {
 			type: 'button',
 			style: {
 				text: `ALARM\\n$(${self.label}:peak_c_${chanSlug})`,
-				size: '18',
+				size: '24',
 				color: WHITE,
 				bgcolor: BLACK,
 			},

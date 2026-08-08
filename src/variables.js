@@ -8,9 +8,9 @@ module.exports = function updateVariables(self) {
 		{ variableId: 'generator_gain', name: 'Signal generator level (dB FS)' },
 		{ variableId: 'generator_type', name: 'Signal generator type' },
 		{ variableId: 'active_measurements', name: 'Number of running measurements' },
-		{ variableId: 'spl_logging', name: 'SPL logging state' },
-		{ variableId: 'spl_cycle_metric', name: 'Cycling readout: metric name' },
-		{ variableId: 'spl_cycle_value', name: 'Cycling readout: value' },
+		{ variableId: 'spl_logging', name: 'SPL logging running (On/Off)' },
+		{ variableId: 'spl_cycle_metric', name: 'Cycling readout: metric label shown on the button' },
+		{ variableId: 'spl_cycle_value', name: 'Cycling readout: value of the current metric (dB)' },
 		{ variableId: 'last_trace_path', name: 'Last captured trace file path' },
 	]
 
