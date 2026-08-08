@@ -14,6 +14,7 @@ const {
 	metricSlug,
 	parseMetrics,
 	parseViolations,
+	viewPresetChoices,
 	flattenCalibratedChannels,
 	thresholdsByMetric,
 	flattenMeasurements,
@@ -141,6 +142,10 @@ class SmaartInstance extends InstanceBase {
 	measurementChoices(filterType) {
 		const list = this.state.measurements.filter((m) => !filterType || m.type === filterType)
 		return list.map((m) => ({ id: m.measurementName, label: m.measurementName }))
+	}
+
+	viewPresetChoices() {
+		return viewPresetChoices(this.state.commands)
 	}
 
 	connect() {

@@ -1,5 +1,6 @@
 const {
 	lookupError,
+	viewPresetChoices,
 	buildGet,
 	buildSet,
 	buildAuth,
@@ -246,5 +247,34 @@ describe('lookupError', () => {
 		const e = lookupError('brand new error')
 		expect(e.description).toContain('brand new error')
 		expect(e.logLevel).toBe('warn')
+	})
+})
+
+describe('viewPresetChoices', () => {
+	const live = [
+		{ description: 'SPL Meters', keypresses: ['E'] },
+		{ description: 'Spectrum', keypresses: ['S'] },
+		{ description: 'Transfer', keypresses: ['T'] },
+		{ description: 'Magnitude/Phase', keypresses: ['1', 'shift + 1'] },
+		{ description: '- Empty -', keypresses: ['2', 'shift + 2'] },
+		{ description: 'RTA/Spectrograph', keypresses: ['4', 'shift + 4'] },
+		{ description: 'Multi-Spectrum', keypresses: ['0', 'shift + 0'] },
+		{ description: 'Capture User View 1', keypresses: ['command + 1'] },
+	]
+	test('uses live descriptions and drops empty slots', () => {
+		const ids = viewPresetChoices(live).map((c) => c.id)
+		expect(ids).toEqual(['S', 'T', '1', '4', '0'])
+	})
+	test('labels come from Smaart, not guesses', () => {
+		const byId = Object.fromEntries(viewPresetChoices(live).map((c) => [c.id, c.label]))
+		expect(byId['4']).toBe('RTA/Spectrograph')
+		expect(byId['1']).toBe('Magnitude/Phase')
+	})
+	test('ignores modified keypresses that merely start with a digit', () => {
+		expect(viewPresetChoices(live).find((c) => c.label === 'Capture User View 1')).toBeUndefined()
+	})
+	test('falls back when no commands are loaded', () => {
+		expect(viewPresetChoices([]).length).toBe(12)
+		expect(viewPresetChoices(undefined).length).toBe(12)
 	})
 })

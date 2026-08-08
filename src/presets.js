@@ -142,6 +142,12 @@ module.exports = function updatePresets(self) {
 	presets.targetCurves = preset('Display', 'Toggle Target Curves', 'TARGET\\nCURVES', 'showTargetCurves', {
 		bgcolor: COLOR.view,
 	})
+	presets.targetCurvesDialog = preset('Display', 'Target Curves Dialog', 'TARGET\\nPICKER', 'targetCurvesDialog', {
+		bgcolor: COLOR.view,
+	})
+	presets.dataSplBar = preset('Display', 'Toggle Data/SPL Meter Bar', 'DATA\\nSPL', 'toggleDataSplBar', {
+		bgcolor: COLOR.bar,
+	})
 	presets.coherence = preset('Display', 'Toggle Coherence', 'COH', 'toggleCoherence', { bgcolor: COLOR.view })
 	presets.peakHold = preset('Display', 'Toggle Peak Hold', 'PEAK\\nHOLD', 'togglePeakHold', { bgcolor: COLOR.peak })
 	presets.splMeters = preset('Display', 'Toggle SPL Meters', 'SPL\\nMETERS', 'toggleMeters', { bgcolor: COLOR.meter })
@@ -250,12 +256,27 @@ module.exports = function updatePresets(self) {
 		options: { direction: 'forward' },
 		bgcolor: COLOR.zorder,
 	})
+	presets.traceUp = preset('Traces', 'Front Trace Offset Up', 'TRACE\\nUP', 'frontTraceOffset', {
+		options: { direction: 'up' },
+		bgcolor: COLOR.zorder,
+	})
+	presets.traceDown = preset('Traces', 'Front Trace Offset Down', 'TRACE\\nDOWN', 'frontTraceOffset', {
+		options: { direction: 'down' },
+		bgcolor: COLOR.zorder,
+	})
+	presets.clearDbOffset = preset('Traces', 'Clear dB Offset (front trace)', 'CLEAR\\ndB', 'clearDbOffset', {
+		bgcolor: COLOR.zorder,
+	})
+	presets.clearAllDbOffsets = preset('Traces', 'Clear All dB Offsets', 'CLEAR\\nALL dB', 'clearAllDbOffsets', {
+		bgcolor: COLOR.zorder,
+	})
 
 	presets.lockPeak = preset('Cursor', 'Lock Cursor To Peak', 'LOCK\\nPEAK', 'lockCursorToPeak', { bgcolor: COLOR.view })
 	presets.clearLock = preset('Cursor', 'Clear Locked Cursor', 'CLEAR\\nLOCK', 'clearLockedCursor', {
 		bgcolor: COLOR.view,
 	})
 
+	presets.resetLeq = preset('SPL', 'Reset SPL Leq Buffers', 'RESET\\nLEQ', 'resetLeq', { bgcolor: COLOR.reset })
 	presets.splLoggingToggle = preset('SPL', 'SPL Logging On/Off (toggle)', 'SPL\\nLOG', 'splLogging', {
 		options: { state: 'toggle' },
 		bgcolor: COLOR.spl,

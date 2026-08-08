@@ -150,9 +150,31 @@ function flattenMeasurements(response) {
 	]
 }
 
+const VIEW_PRESET_ORDER = ['S', 'T', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+const VIEW_PRESET_FALLBACK = [
+	{ id: 'S', label: 'Spectrum' },
+	{ id: 'T', label: 'Transfer' },
+	...['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((n) => ({ id: n, label: `View Preset ${n}` })),
+	{ id: '0', label: 'Multi-Spectrum' },
+]
+
+function viewPresetChoices(commands) {
+	const named = new Map()
+	for (const c of commands ?? []) {
+		const key = Array.isArray(c.keypresses) ? c.keypresses[0] : undefined
+		if (typeof key !== 'string' || !/^[0-9ST]$/.test(key)) continue
+		const label = (c.description ?? '').trim()
+		if (!label || label === '- Empty -') continue
+		named.set(key, label)
+	}
+	if (named.size === 0) return VIEW_PRESET_FALLBACK
+	return VIEW_PRESET_ORDER.filter((k) => named.has(k)).map((k) => ({ id: k, label: named.get(k) }))
+}
+
 module.exports = {
 	errors,
 	lookupError,
+	viewPresetChoices,
 	buildGet,
 	buildSet,
 	buildAuth,

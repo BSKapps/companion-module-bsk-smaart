@@ -283,6 +283,59 @@ module.exports = function updateActions(self) {
 				await self.setSplLogging(action.options.state)
 			},
 		},
+		clearDbOffset: {
+			name: 'Clear dB Offset (front trace)',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('Y')
+			},
+		},
+		clearAllDbOffsets: {
+			name: 'Clear All dB Offsets',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('command + Y')
+			},
+		},
+		frontTraceOffset: {
+			name: 'Front Trace Offset Up/Down',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Direction',
+					id: 'direction',
+					default: 'up',
+					choices: [
+						{ id: 'up', label: 'Up' },
+						{ id: 'down', label: 'Down' },
+					],
+				},
+			],
+			callback: async (action) => {
+				await self.issueCommand('command + cursor ' + action.options.direction)
+			},
+		},
+		toggleDataSplBar: {
+			name: 'Toggle Data/SPL Meter Bar',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('option + E')
+			},
+		},
+		resetLeq: {
+			name: 'Reset SPL Leq Buffers',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('option + V')
+			},
+		},
+		targetCurvesDialog: {
+			name: 'Target Curves Dialog',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('option + X')
+			},
+		},
 		showTargetCurves: {
 			name: 'Toggle Target Curves',
 			options: [],
@@ -354,20 +407,7 @@ module.exports = function updateActions(self) {
 					label: 'Preset',
 					id: 'viewPreset',
 					default: 'S',
-					choices: [
-						{ id: 'S', label: 'Spectrum' },
-						{ id: 'T', label: 'Transfer' },
-						{ id: '1', label: 'User View 1' },
-						{ id: '2', label: 'User View 2' },
-						{ id: '3', label: 'User View 3' },
-						{ id: '4', label: 'User View 4' },
-						{ id: '5', label: 'User View 5' },
-						{ id: '6', label: 'User View 6' },
-						{ id: '7', label: 'User View 7' },
-						{ id: '8', label: 'User View 8' },
-						{ id: '9', label: 'User View 9' },
-						{ id: '0', label: 'Multi-Spectrum' },
-					],
+					choices: self.viewPresetChoices(),
 				},
 			],
 			callback: async (action) => {
