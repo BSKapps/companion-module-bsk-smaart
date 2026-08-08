@@ -83,7 +83,7 @@ module.exports = function updatePresets(self) {
 	presets.runSpecToggle = preset(
 		'Measurements',
 		'Run Spectrum On/Off (toggle)',
-		'RUN\\nSPEC',
+		'RUN\\nSPECT',
 		'toggleMeasurementGroup',
 		{
 			options: { group: 'allSpectrumMeasurements' },
@@ -100,12 +100,12 @@ module.exports = function updatePresets(self) {
 		options: { measurement: 'allTransferFunctionMeasurements', state: 'off' },
 		bgcolor: COLOR.measure,
 	})
-	presets.startSpec = preset('Measurements', 'Start All Spectrum Measurements', 'SPEC\\nON', 'setMeasurementActive', {
+	presets.startSpec = preset('Measurements', 'Start All Spectrum Measurements', 'SPECT\\nON', 'setMeasurementActive', {
 		options: { measurement: 'allSpectrumMeasurements', state: 'on' },
 		bgcolor: COLOR.measure,
 		feedbacks: [{ feedbackId: 'anySpectrumActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
 	})
-	presets.stopSpec = preset('Measurements', 'Stop All Spectrum Measurements', 'SPEC\\nOFF', 'setMeasurementActive', {
+	presets.stopSpec = preset('Measurements', 'Stop All Spectrum Measurements', 'SPECT\\nOFF', 'setMeasurementActive', {
 		options: { measurement: 'allSpectrumMeasurements', state: 'off' },
 		bgcolor: COLOR.measure,
 	})
@@ -173,7 +173,7 @@ module.exports = function updatePresets(self) {
 		options: { viewPreset: 'T' },
 		bgcolor: COLOR.transfer,
 	})
-	presets.viewMulti = preset('Views', 'Multi-Spectrum View', 'MULTI\\nSPEC', 'selectViewPreset', {
+	presets.viewMulti = preset('Views', 'Multi-Spectrum View', 'MULTI\\nSPECT', 'selectViewPreset', {
 		options: { viewPreset: '0' },
 		bgcolor: COLOR.view,
 	})
@@ -234,10 +234,16 @@ module.exports = function updatePresets(self) {
 		options: { measurement: 'allTransferFunctionMeasurements' },
 		bgcolor: COLOR.capture,
 	})
-	presets.captureSpec = preset('Traces', 'Capture All Active Spectrum Measurements', 'CAPTURE\\nSPEC', 'captureTrace', {
-		options: { measurement: 'allSpectrumMeasurements' },
-		bgcolor: COLOR.capture,
-	})
+	presets.captureSpec = preset(
+		'Traces',
+		'Capture All Active Spectrum Measurements',
+		'CAPTURE\\nSPECT',
+		'captureTrace',
+		{
+			options: { measurement: 'allSpectrumMeasurements' },
+			bgcolor: COLOR.capture,
+		},
+	)
 	presets.hideTrace = preset('Traces', 'Hide Trace', 'HIDE', 'hideTrace', { bgcolor: COLOR.view })
 	presets.hideAll = preset('Traces', 'Hide All Traces', 'HIDE\\nALL', 'hideAllTraces', { bgcolor: COLOR.view })
 	presets.zOrder = preset('Traces', 'Cycle Z Order', 'Z\\nORDER', 'cycleZOrder', {
