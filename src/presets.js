@@ -297,7 +297,7 @@ module.exports = function updatePresets(self) {
 				type: 'button',
 				style: {
 					text: `${label}\\n$(${self.label}:${slug}_${chanSlug})`,
-					size: '24',
+					size: '18',
 					color: WHITE,
 					bgcolor: BLACK,
 				},
@@ -311,7 +311,7 @@ module.exports = function updatePresets(self) {
 				style: {
 					text: `\`${label}\n\${$(${self.label}:spl_logging) == 'On' ? $(${self.label}:${slug}_${chanSlug}) : 'TAP'}\``,
 					textExpression: true,
-					size: '24',
+					size: '18',
 					color: WHITE,
 					bgcolor: BLACK,
 				},
@@ -326,7 +326,7 @@ module.exports = function updatePresets(self) {
 			style: {
 				text: `$(${self.label}:spl_cycle_metric) == '' ? 'TAP' : \`\${$(${self.label}:spl_cycle_metric)}\n\${$(${self.label}:spl_cycle_value)}\``,
 				textExpression: true,
-				size: '24',
+				size: '18',
 				color: WHITE,
 				bgcolor: BLACK,
 			},
