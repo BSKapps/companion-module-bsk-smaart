@@ -222,19 +222,19 @@ module.exports = function updatePresets(self) {
 		bgcolor: COLOR.zoom,
 	})
 
-	presets.captureTrace = preset('Traces', 'Capture Trace', 'CAP\\nTURE', 'captureTrace', {
+	presets.captureTrace = preset('Traces', 'Capture Trace', 'CAPTURE\\nTRACE', 'captureTrace', {
 		options: { measurement: firstMeasurement },
 		bgcolor: COLOR.capture,
 	})
-	presets.captureAll = preset('Traces', 'Capture All Active Measurements', 'CAP\\nALL', 'captureTrace', {
+	presets.captureAll = preset('Traces', 'Capture All Active Measurements', 'CAPTURE\\nALL', 'captureTrace', {
 		options: { measurement: 'allMeasurements' },
 		bgcolor: COLOR.capture,
 	})
-	presets.captureTFs = preset('Traces', 'Capture All Active Transfer Functions', 'CAP\\nTFs', 'captureTrace', {
+	presets.captureTFs = preset('Traces', 'Capture All Active Transfer Functions', 'CAPTURE\\nTFs', 'captureTrace', {
 		options: { measurement: 'allTransferFunctionMeasurements' },
 		bgcolor: COLOR.capture,
 	})
-	presets.captureSpec = preset('Traces', 'Capture All Active Spectrum Measurements', 'CAP\\nSPEC', 'captureTrace', {
+	presets.captureSpec = preset('Traces', 'Capture All Active Spectrum Measurements', 'CAPTURE\\nSPEC', 'captureTrace', {
 		options: { measurement: 'allSpectrumMeasurements' },
 		bgcolor: COLOR.capture,
 	})
