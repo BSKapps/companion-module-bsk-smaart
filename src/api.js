@@ -162,6 +162,7 @@ function shortMetricLabel(metric) {
 	return String(metric ?? '')
 		.replace(/^SPL /, '')
 		.replace(/^Exposure /, 'Exp ')
+		.replace(/[`$\\{}]/g, '')
 }
 
 function viewPresetChoices(commands) {

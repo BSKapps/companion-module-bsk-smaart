@@ -390,9 +390,10 @@ class SmaartInstance extends InstanceBase {
 			if (!Number.isFinite(value)) continue
 			updates[`${metricSlug(metric)}_${variableId(channel.key)}`] = value.toFixed(1)
 		}
+		Object.assign(updates, this.cycleValues())
 		this.publishedIds = [...new Set([...(this.publishedIds ?? []), ...Object.keys(updates)])]
 		this.setVariableValues(updates)
-		this.checkFeedbacks('splAbove', 'splZone', 'splAlarm')
+		this.checkFeedbacks('splAbove', 'splZone', 'splAlarm', 'splCycleZone')
 	}
 
 	splChannelChoices() {
@@ -406,13 +407,25 @@ class SmaartInstance extends InstanceBase {
 		return this.state.splChannelsSeen[0]
 	}
 
+	cycleValues() {
+		const metric = this.state.splCycleMetric
+		if (!metric) return { spl_cycle_metric: '', spl_cycle_value: '' }
+		const value = this.splValue(this.splPresetChannel()?.key, metric)
+		return {
+			spl_cycle_metric: shortMetricLabel(metric),
+			spl_cycle_value: Number.isFinite(value) ? value.toFixed(1) : '',
+		}
+	}
+
 	cycleSplMetric(list) {
-		const metrics = (list ?? []).filter((m) => typeof m === 'string' && m.length > 0)
+		const known = this.state.splMetrics
+		const metrics = (list ?? []).filter(
+			(m) => typeof m === 'string' && m.length > 0 && (known.length === 0 || known.includes(m)),
+		)
 		if (metrics.length === 0) return
 		const at = metrics.indexOf(this.state.splCycleMetric)
 		this.state.splCycleMetric = metrics[(at + 1) % metrics.length]
 		this.publishState()
-		this.checkFeedbacks('splCycleZone')
 	}
 
 	splMetricChoices() {
@@ -449,12 +462,7 @@ class SmaartInstance extends InstanceBase {
 				values[`${metricSlug(metric)}_${variableId(channel.key)}`] = value.toFixed(1)
 			}
 		}
-		const cycleMetric = this.state.splCycleMetric
-		if (cycleMetric) {
-			values.spl_cycle_metric = shortMetricLabel(cycleMetric)
-			const cycleValue = this.splValue(this.splPresetChannel()?.key, cycleMetric)
-			if (Number.isFinite(cycleValue)) values.spl_cycle_value = cycleValue.toFixed(1)
-		}
+		Object.assign(values, this.cycleValues())
 		if (this.publishedIds) {
 			for (const id of this.publishedIds) {
 				if (!(id in values)) values[id] = undefined

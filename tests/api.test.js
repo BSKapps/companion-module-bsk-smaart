@@ -1,5 +1,6 @@
 const {
 	lookupError,
+	shortMetricLabel,
 	viewPresetChoices,
 	buildGet,
 	buildSet,
@@ -276,5 +277,59 @@ describe('viewPresetChoices', () => {
 	test('falls back when no commands are loaded', () => {
 		expect(viewPresetChoices([]).length).toBe(12)
 		expect(viewPresetChoices(undefined).length).toBe(12)
+	})
+})
+
+describe('shortMetricLabel', () => {
+	test('drops the SPL prefix so the weighting reads first', () => {
+		expect(shortMetricLabel('SPL A Slow')).toBe('A Slow')
+		expect(shortMetricLabel('SPL Slow')).toBe('Slow')
+		expect(shortMetricLabel('SPL C Fast')).toBe('C Fast')
+	})
+	test('shortens Exposure, the only 8-character unbreakable word', () => {
+		expect(shortMetricLabel('Exposure O')).toBe('Exp O')
+		expect(shortMetricLabel('Exposure N')).toBe('Exp N')
+	})
+	test('leaves already-short metrics alone', () => {
+		for (const m of ['LAeq 15', 'Leq 60', 'Peak C', 'FS Peak', 'Peak']) {
+			expect(shortMetricLabel(m)).toBe(m)
+		}
+	})
+	test('no label exceeds a 4 character unbreakable word', () => {
+		const all = [
+			'FS Peak',
+			'Peak C',
+			'SPL Fast',
+			'SPL A Fast',
+			'SPL C Fast',
+			'SPL Slow',
+			'SPL A Slow',
+			'SPL C Slow',
+			'Leq 1',
+			'LAeq 1',
+			'LCeq 1',
+			'Leq 60',
+			'LAeq 60',
+			'LCeq 60',
+			'Exposure O',
+			'Exposure N',
+			'Peak',
+			'Peak A',
+			'Leq 15',
+			'LAeq 15',
+			'LCeq 15',
+		]
+		for (const m of all) {
+			const longest = Math.max(
+				...shortMetricLabel(m)
+					.split(' ')
+					.map((w) => w.length),
+			)
+			expect(longest).toBeLessThanOrEqual(4)
+		}
+	})
+	test('strips characters that would break a Companion template literal', () => {
+		expect(shortMetricLabel('We`ird ${x}')).toBe('Weird x')
+		expect(shortMetricLabel(undefined)).toBe('')
 	})
 })

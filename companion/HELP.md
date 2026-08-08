@@ -19,9 +19,15 @@ Smaart does not need to be the front application. Commands go over the network, 
 - Find Delay: runs Smaart's delay finder on a transfer function measurement, with options to start the measurement automatically, insert the found delay, and stop afterwards.
 - Set Delay: sets a transfer function measurement's delay in ms directly.
 - Reset Averages.
+- Clear dB Offset / Clear All dB Offsets: clears the front trace's dB offset, or every trace's.
+- Front Trace Offset Up/Down: nudges the front trace's dB offset, the same as Smaart's dB +/- buttons.
+- Toggle Data / SPL Meter Bar: flips the left bar between the Data Library and the SPL meters.
+- Reset SPL Leq Buffers.
+- Open Target Curves Dialog: opens Smaart's target curve picker, as opposed to Show/Hide Target Curves which just shows or hides them.
+- Cycle SPL Readout Metric: steps a readout button through a list of metrics you choose.
 - SPL Logging Start/Stop: starts, stops, or toggles SPL logging, which is what makes the live SPL variables available.
 - Display toggles: target curves, coherence, peak hold, SPL meters, SPL mode, input meters, clock/SPL meter, bars.
-- Views: spectrum, transfer, user views 1-9, multi-spectrum, real-time and impulse modes, zoom presets 1-4 and zoom in/out.
+- Views: spectrum, transfer, the numbered view presets, real-time and impulse modes, zoom presets 1-4 and zoom in/out. The view preset list is read from Smaart, so it shows your own view names and hides empty slots. These change the layout inside the current tab; the API cannot switch between tabs.
 - Traces: hide, hide all, Z order, locked cursor controls.
 - Run Command: pick any command from a list Smaart reports over the API, so you do not need to know the hotkey.
 - Custom Keypress: send any Smaart hotkey string, e.g. "shift + Z" or "cursor up", for anything not covered above.
@@ -32,7 +38,11 @@ Live SPL metering works on Smaart Suite and the Smaart SPL edition. Smaart LE an
 
 While SPL logging is running in Smaart, every calibrated input channel streams its meter values to Companion: SPL Fast/Slow (Z, A, and C weighted), Leq/LAeq/LCeq over the configured periods, Peak/Peak C, FS Peak, and exposure. Each value is a variable you can put on a button, updated at the configurable rate (up to 8 per second, default 2). Start SPL logging in Smaart, or from the surface with the SPL Logging Start/Stop action, to activate them; the channels appear automatically. SPL values are only available while logging runs, so the readout buttons blank out when logging stops. The SPL Alarm feedback follows the alarm levels you set in Smaart.
 
-The "SPL A Slow, tap to start/stop logging" preset is a single self-contained button: press it to start SPL logging, then it shows the live level coloured by Smaart's thresholds, and press again to stop. The SPL presets only appear in the Presets list while logging is running, because that is when Smaart exposes the channels. Drag the button onto your surface once while logging is on; it keeps working across later logging on/off cycles.
+Every metric gets two presets. "<metric> readout" is display only, so a stray press cannot stop your logging. "<metric>, tap to start/stop logging" is a single self-contained button: it reads START while logging is off, press to start, then it shows the live level coloured by Smaart's thresholds, and press again to stop.
+
+There is also a cycling readout: each press steps it to the next metric in a list you choose, so one button can cover several metrics.
+
+Once Companion has seen your calibrated channels for the first time, it remembers them, so the SPL presets, variables and feedback dropdowns stay available even when logging is stopped. Before that first logging run there is nothing for Smaart to report, so start logging once to populate them.
 
 ## Feedbacks
 
@@ -41,6 +51,7 @@ The "SPL A Slow, tap to start/stop logging" preset is a single self-contained bu
 - Delay Tracking Running / Any Delay Tracking Running.
 - SPL Above Level: lights when a chosen metric on a chosen channel reaches a level you set.
 - SPL Zone Colour: colours the button green/yellow/red using the thresholds configured in Smaart.
+- SPL Zone Colour (cycling readout): the same, but follows whichever metric the cycling readout is currently showing.
 - SPL Alarm Level Reached: lights when a channel hits an alarm level configured in Smaart.
 
 ## Variables
@@ -51,6 +62,7 @@ The "SPL A Slow, tap to start/stop logging" preset is a single self-contained bu
 - Last captured trace file path, filled in by Capture Trace and usable with Rename Trace.
 - Per measurement: running state, plus delay tracking state and delay in ms for transfer function measurements.
 - Per calibrated channel while SPL logging runs: all SPL meter metrics listed above.
+- Cycling readout: the metric label currently shown and its value.
 
 ## Notes
 
