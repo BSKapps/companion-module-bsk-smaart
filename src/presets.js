@@ -283,10 +283,11 @@ module.exports = function updatePresets(self) {
 		feedbacks: [{ feedbackId: 'splLoggingActive', options: {}, style: { bgcolor: COLOR.splLogOn, color: WHITE } }],
 	})
 
-	const splChannel = self.state.splChannels[0]
+	const splChannel = self.splPresetChannel()
 	if (splChannel) {
 		const chanSlug = variableId(splChannel.key)
-		for (const metric of ['SPL A Slow', 'LAeq 15', 'Peak C']) {
+		const metrics = self.state.splMetrics.length ? self.state.splMetrics : ['SPL A Slow', 'LAeq 15', 'Peak C']
+		for (const metric of metrics) {
 			const slug = metricSlug(metric)
 			presets[`spl_${slug}`] = {
 				category: 'SPL',

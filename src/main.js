@@ -43,6 +43,7 @@ class SmaartInstance extends InstanceBase {
 			measurements: [],
 			delays: {},
 			splChannels: [],
+			splChannelsSeen: [],
 			splMetrics: [],
 			splThresholds: {},
 			splValues: {},
@@ -311,6 +312,7 @@ class SmaartInstance extends InstanceBase {
 			const channelsChanged =
 				channels.map((c) => c.key).join('|') !== this.state.splChannels.map((c) => c.key).join('|')
 			this.state.splChannels = channels
+			if (channels.length > 0) this.state.splChannelsSeen = channels
 			this.state.splMetrics = calibrated.metrics ?? []
 			this.state.splThresholds = thresholdsByMetric(calibrated)
 			this.reconcileSplStreams()
@@ -392,10 +394,14 @@ class SmaartInstance extends InstanceBase {
 	}
 
 	splChannelChoices() {
-		return this.state.splChannels.map((c) => ({
+		return this.state.splChannelsSeen.map((c) => ({
 			id: c.key,
 			label: `${c.channelName} (${c.deviceName})`,
 		}))
+	}
+
+	splPresetChannel() {
+		return this.state.splChannelsSeen[0]
 	}
 
 	splMetricChoices() {

@@ -29,7 +29,7 @@ module.exports = function updateVariables(self) {
 		}
 	}
 
-	for (const channel of self.state.splChannels) {
+	for (const channel of self.state.splChannelsSeen) {
 		for (const metric of self.state.splMetrics) {
 			definitions.push({
 				variableId: `${metricSlug(metric)}_${variableId(channel.key)}`,
