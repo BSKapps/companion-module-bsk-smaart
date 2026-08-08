@@ -309,7 +309,7 @@ module.exports = function updatePresets(self) {
 				name: `${metric}, tap to start/stop logging`,
 				type: 'button',
 				style: {
-					text: `\`${label}\n\${$(${self.label}:spl_logging) == 'On' ? $(${self.label}:${slug}_${chanSlug}) : 'START'}\``,
+					text: `\`${label}\n\${$(${self.label}:spl_logging) == 'On' ? $(${self.label}:${slug}_${chanSlug}) : 'TAP'}\``,
 					textExpression: true,
 					size: '24',
 					color: WHITE,
