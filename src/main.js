@@ -44,6 +44,7 @@ class SmaartInstance extends InstanceBase {
 			delays: {},
 			splChannels: [],
 			splChannelsSeen: [],
+			splCycleMetric: null,
 			splMetrics: [],
 			splThresholds: {},
 			splValues: {},
@@ -404,6 +405,15 @@ class SmaartInstance extends InstanceBase {
 		return this.state.splChannelsSeen[0]
 	}
 
+	cycleSplMetric(list) {
+		const metrics = (list ?? []).filter((m) => typeof m === 'string' && m.length > 0)
+		if (metrics.length === 0) return
+		const at = metrics.indexOf(this.state.splCycleMetric)
+		this.state.splCycleMetric = metrics[(at + 1) % metrics.length]
+		this.publishState()
+		this.checkFeedbacks('splCycleZone')
+	}
+
 	splMetricChoices() {
 		return this.state.splMetrics.map((m) => ({ id: m, label: m }))
 	}
@@ -437,6 +447,12 @@ class SmaartInstance extends InstanceBase {
 				if (!Number.isFinite(value)) continue
 				values[`${metricSlug(metric)}_${variableId(channel.key)}`] = value.toFixed(1)
 			}
+		}
+		const cycleMetric = this.state.splCycleMetric
+		if (cycleMetric) {
+			values.spl_cycle_metric = cycleMetric
+			const cycleValue = this.splValue(this.splPresetChannel()?.key, cycleMetric)
+			if (Number.isFinite(cycleValue)) values.spl_cycle_value = cycleValue.toFixed(1)
 		}
 		if (this.publishedIds) {
 			for (const id of this.publishedIds) {

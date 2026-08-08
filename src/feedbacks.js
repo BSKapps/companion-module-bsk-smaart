@@ -56,6 +56,21 @@ module.exports = function updateFeedbacks(self) {
 				return {}
 			},
 		},
+		splCycleZone: {
+			type: 'advanced',
+			name: 'SPL Zone Colour (cycling readout)',
+			options: [splChannelOption],
+			callback: (feedback) => {
+				const metric = self.state.splCycleMetric
+				if (!metric) return {}
+				const value = self.splValue(feedback.options.channel, metric)
+				const zone = zoneForValue(value, self.state.splThresholds[metric])
+				if (zone === 'red') return { bgcolor: combineRgb(200, 0, 0), color: combineRgb(255, 255, 255) }
+				if (zone === 'yellow') return { bgcolor: combineRgb(200, 160, 0), color: combineRgb(0, 0, 0) }
+				if (zone === 'green') return { bgcolor: combineRgb(0, 155, 5), color: combineRgb(255, 255, 255) }
+				return {}
+			},
+		},
 		splAlarm: {
 			type: 'boolean',
 			name: 'SPL Alarm Level Reached',

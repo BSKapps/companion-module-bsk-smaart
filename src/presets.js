@@ -319,6 +319,25 @@ module.exports = function updatePresets(self) {
 				feedbacks: [zone()],
 			}
 		}
+		presets.splCycle = {
+			category: 'SPL',
+			name: 'Cycling readout (press to change metric)',
+			type: 'button',
+			style: {
+				text: `$(${self.label}:spl_cycle_metric) == '' ? 'CYCLE' : \`\${$(${self.label}:spl_cycle_metric)}\n\${$(${self.label}:spl_cycle_value)}\``,
+				textExpression: true,
+				size: '18',
+				color: WHITE,
+				bgcolor: BLACK,
+			},
+			steps: [
+				{
+					down: [{ actionId: 'cycleSplMetric', options: { metrics: ['SPL A Slow', 'SPL C Slow', 'Leq 15'] } }],
+					up: [],
+				},
+			],
+			feedbacks: [{ feedbackId: 'splCycleZone', options: { channel: splChannel.key } }],
+		}
 		presets.splAlarm = {
 			category: 'SPL',
 			name: 'SPL alarm',

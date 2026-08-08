@@ -264,6 +264,21 @@ module.exports = function updateActions(self) {
 				await self.setTracking(name, action.options.state === 'on')
 			},
 		},
+		cycleSplMetric: {
+			name: 'Cycle SPL Readout Metric',
+			options: [
+				{
+					type: 'multidropdown',
+					label: 'Metrics to cycle',
+					id: 'metrics',
+					default: ['SPL A Slow', 'SPL C Slow', 'Leq 15'],
+					choices: self.splMetricChoices(),
+				},
+			],
+			callback: async (action) => {
+				self.cycleSplMetric(action.options.metrics)
+			},
+		},
 		splLogging: {
 			name: 'SPL Logging Start/Stop',
 			options: [
