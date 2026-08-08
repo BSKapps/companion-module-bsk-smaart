@@ -324,7 +324,7 @@ module.exports = function updatePresets(self) {
 			name: 'Cycling readout (press to change metric)',
 			type: 'button',
 			style: {
-				text: `$(${self.label}:spl_cycle_metric) == '' ? 'CYCLE' : \`\${$(${self.label}:spl_cycle_metric)}\n\${$(${self.label}:spl_cycle_value)}\``,
+				text: `$(${self.label}:spl_cycle_metric) == '' ? 'TAP' : \`\${$(${self.label}:spl_cycle_metric)}\n\${$(${self.label}:spl_cycle_value)}\``,
 				textExpression: true,
 				size: '24',
 				color: WHITE,
@@ -344,7 +344,7 @@ module.exports = function updatePresets(self) {
 			type: 'button',
 			style: {
 				text: `ALARM\\n$(${self.label}:peak_c_${chanSlug})`,
-				size: '24',
+				size: '18',
 				color: WHITE,
 				bgcolor: BLACK,
 			},
