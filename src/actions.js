@@ -1,3 +1,4 @@
+const { zoomKeypress } = require('./api')
 function directionOption(choices, def) {
 	return {
 		type: 'dropdown',
@@ -466,7 +467,7 @@ module.exports = function updateActions(self) {
 				),
 			],
 			callback: async (action) => {
-				await self.issueCommand('option + command' + action.options.direction)
+				await self.issueCommand(zoomKeypress('x', action.options.direction))
 			},
 		},
 		zoomY: {
@@ -481,7 +482,7 @@ module.exports = function updateActions(self) {
 				),
 			],
 			callback: async (action) => {
-				await self.issueCommand(action.options.direction)
+				await self.issueCommand(zoomKeypress('y', action.options.direction))
 			},
 		},
 		zoomXY: {
@@ -496,7 +497,7 @@ module.exports = function updateActions(self) {
 				),
 			],
 			callback: async (action) => {
-				await self.issueCommand('command' + action.options.direction)
+				await self.issueCommand(zoomKeypress('xy', action.options.direction))
 			},
 		},
 		cycleZOrder: {

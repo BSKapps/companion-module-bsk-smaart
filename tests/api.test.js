@@ -1,5 +1,6 @@
 const {
 	lookupError,
+	zoomKeypress,
 	shortMetricLabel,
 	viewPresetChoices,
 	buildGet,
@@ -331,5 +332,29 @@ describe('shortMetricLabel', () => {
 	test('strips characters that would break a Companion template literal', () => {
 		expect(shortMetricLabel('We`ird ${x}')).toBe('Weird x')
 		expect(shortMetricLabel(undefined)).toBe('')
+	})
+})
+
+describe('zoomKeypress', () => {
+	test('keeps the separator around the +/- key', () => {
+		expect(zoomKeypress('x', '+')).toBe('option + command + +')
+		expect(zoomKeypress('x', '-')).toBe('option + command + -')
+		expect(zoomKeypress('xy', '+')).toBe('command + +')
+		expect(zoomKeypress('xy', '-')).toBe('command + -')
+	})
+	test('Y axis is the bare key', () => {
+		expect(zoomKeypress('y', '+')).toBe('+')
+		expect(zoomKeypress('y', '-')).toBe('-')
+	})
+	test('never concatenates a modifier straight onto the key', () => {
+		for (const axis of ['x', 'y', 'xy']) {
+			for (const dir of ['+', '-']) {
+				expect(zoomKeypress(axis, dir)).not.toMatch(/command[+-]/)
+			}
+		}
+	})
+	test('unknown axis or direction yields undefined rather than a bad string', () => {
+		expect(zoomKeypress('z', '+')).toBeUndefined()
+		expect(zoomKeypress('x', '*')).toBeUndefined()
 	})
 })

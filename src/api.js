@@ -158,6 +158,16 @@ const VIEW_PRESET_FALLBACK = [
 	{ id: '0', label: 'Multi-Spectrum' },
 ]
 
+const ZOOM_KEYPRESS = {
+	x: { '+': 'option + command + +', '-': 'option + command + -' },
+	y: { '+': '+', '-': '-' },
+	xy: { '+': 'command + +', '-': 'command + -' },
+}
+
+function zoomKeypress(axis, direction) {
+	return ZOOM_KEYPRESS[axis]?.[direction]
+}
+
 function shortMetricLabel(metric) {
 	return String(metric ?? '')
 		.replace(/^SPL /, '')
@@ -183,6 +193,7 @@ module.exports = {
 	lookupError,
 	viewPresetChoices,
 	shortMetricLabel,
+	zoomKeypress,
 	buildGet,
 	buildSet,
 	buildAuth,
