@@ -280,7 +280,8 @@ module.exports = function updatePresets(self) {
 			name: 'SPL A Slow, tap to start/stop logging',
 			type: 'button',
 			style: {
-				text: `SPL A\\n$(${self.label}:spl_a_slow_${chanSlug})`,
+				text: `\`SPL A\n\${$(${self.label}:spl_logging) == 'On' ? $(${self.label}:spl_a_slow_${chanSlug}) : 'START'}\``,
+				textExpression: true,
 				size: '18',
 				color: WHITE,
 				bgcolor: BLACK,
