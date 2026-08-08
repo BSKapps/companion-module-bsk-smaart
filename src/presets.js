@@ -83,7 +83,7 @@ module.exports = function updatePresets(self) {
 	presets.runSpecToggle = preset(
 		'Measurements',
 		'Run Spectrum On/Off (toggle)',
-		'RUN\\nSPEC',
+		'RUN\\nSPECTRUM',
 		'toggleMeasurementGroup',
 		{
 			options: { group: 'allSpectrumMeasurements' },
@@ -100,15 +100,27 @@ module.exports = function updatePresets(self) {
 		options: { measurement: 'allTransferFunctionMeasurements', state: 'off' },
 		bgcolor: COLOR.measure,
 	})
-	presets.startSpec = preset('Measurements', 'Start All Spectrum Measurements', 'SPEC\\nON', 'setMeasurementActive', {
-		options: { measurement: 'allSpectrumMeasurements', state: 'on' },
-		bgcolor: COLOR.measure,
-		feedbacks: [{ feedbackId: 'anySpectrumActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
-	})
-	presets.stopSpec = preset('Measurements', 'Stop All Spectrum Measurements', 'SPEC\\nOFF', 'setMeasurementActive', {
-		options: { measurement: 'allSpectrumMeasurements', state: 'off' },
-		bgcolor: COLOR.measure,
-	})
+	presets.startSpec = preset(
+		'Measurements',
+		'Start All Spectrum Measurements',
+		'SPECTRUM\\nON',
+		'setMeasurementActive',
+		{
+			options: { measurement: 'allSpectrumMeasurements', state: 'on' },
+			bgcolor: COLOR.measure,
+			feedbacks: [{ feedbackId: 'anySpectrumActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
+		},
+	)
+	presets.stopSpec = preset(
+		'Measurements',
+		'Stop All Spectrum Measurements',
+		'SPECTRUM\\nOFF',
+		'setMeasurementActive',
+		{
+			options: { measurement: 'allSpectrumMeasurements', state: 'off' },
+			bgcolor: COLOR.measure,
+		},
+	)
 	presets.startAll = preset('Measurements', 'Run All Measurements', 'RUN\\nALL', 'startAllMeasurements', {
 		bgcolor: COLOR.measure,
 		feedbacks: [{ feedbackId: 'anyMeasurementActive', options: {}, style: { bgcolor: COLOR.measureOn, color: WHITE } }],
@@ -116,7 +128,7 @@ module.exports = function updatePresets(self) {
 	presets.stopAll = preset('Measurements', 'Stop All Measurements', 'STOP\\nALL', 'stopAllMeasurements', {
 		bgcolor: COLOR.measure,
 	})
-	presets.resetAvg = preset('Measurements', 'Reset Averages', 'RESET\\nAVG', 'resetAvg', { bgcolor: COLOR.reset })
+	presets.resetAvg = preset('Measurements', 'Reset Averages', 'RESET\\nAVERAGE', 'resetAvg', { bgcolor: COLOR.reset })
 
 	presets.trackingToggle = preset('Delay', 'Delay Tracking On/Off (toggle)', 'TRACK\\nON/OFF', 'toggleTrackingAll', {
 		bgcolor: COLOR.track,
@@ -155,11 +167,11 @@ module.exports = function updatePresets(self) {
 		options: { selectedBar: 'B' },
 		bgcolor: COLOR.bar,
 	})
-	presets.controlBar = preset('Display', 'Toggle Control Bar', 'CTRL\\nBAR', 'toggleBar', {
+	presets.controlBar = preset('Display', 'Toggle Control Bar', 'CONTROL\\nBAR', 'toggleBar', {
 		options: { selectedBar: 'O' },
 		bgcolor: COLOR.bar,
 	})
-	presets.commandBar = preset('Display', 'Toggle Command Bar', 'CMD\\nBAR', 'toggleBar', {
+	presets.commandBar = preset('Display', 'Toggle Command Bar', 'COMMAND\\nBAR', 'toggleBar', {
 		options: { selectedBar: 'U' },
 		bgcolor: COLOR.bar,
 	})
@@ -173,12 +185,12 @@ module.exports = function updatePresets(self) {
 		options: { viewPreset: 'T' },
 		bgcolor: COLOR.transfer,
 	})
-	presets.viewMulti = preset('Views', 'Multi-Spectrum View', 'MULTI\\nSPEC', 'selectViewPreset', {
+	presets.viewMulti = preset('Views', 'Multi-Spectrum View', 'MULTI\\nSPECTRUM', 'selectViewPreset', {
 		options: { viewPreset: '0' },
 		bgcolor: COLOR.view,
 	})
 	presets.realTime = preset('Views', 'Real-Time Mode', 'RT\\nMODE', 'realTimeMode', { bgcolor: COLOR.view })
-	presets.impulse = preset('Views', 'Impulse Mode', 'IR\\nMODE', 'impulseMode', { bgcolor: COLOR.view })
+	presets.impulse = preset('Views', 'Impulse Mode', 'IMPULSE\\nMODE', 'impulseMode', { bgcolor: COLOR.view })
 	presets.viewFlip = {
 		category: 'Views',
 		name: 'TF/RTA view (alternates each press)',
