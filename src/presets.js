@@ -291,7 +291,7 @@ module.exports = function updatePresets(self) {
 			const slug = metricSlug(metric)
 			const label = shortMetricLabel(metric)
 			presets[`spl_${slug}`] = {
-				category: 'SPL',
+				category: 'SPL Readouts',
 				name: `${metric} readout, tap to start/stop logging`,
 				type: 'button',
 				style: {
