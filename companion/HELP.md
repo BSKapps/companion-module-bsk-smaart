@@ -38,9 +38,9 @@ Live SPL metering works on Smaart Suite and the Smaart SPL edition. Smaart LE an
 
 While SPL logging is running in Smaart, every calibrated input channel streams its meter values to Companion: SPL Fast/Slow (Z, A, and C weighted), Leq/LAeq/LCeq over the configured periods, Peak/Peak C, FS Peak, and exposure. Each value is a variable you can put on a button, updated at the configurable rate (up to 8 per second, default 2). Start SPL logging in Smaart, or from the surface with the SPL Logging Start/Stop action, to activate them; the channels appear automatically. SPL values are only available while logging runs, so the readout buttons blank out when logging stops. The SPL Alarm feedback follows the alarm levels you set in Smaart.
 
-Every metric gets two presets. "<metric> readout" is display only, so a stray press cannot stop your logging. "<metric>, tap to start/stop logging" is a single self-contained button: it reads START while logging is off, press to start, then it shows the live level coloured by Smaart's thresholds, and press again to stop.
+Every metric gets a preset, and each one is a self-contained button: it reads TAP while logging is off, press to start, then it shows the live level coloured by Smaart's thresholds, and press again to stop. If you want a display-only readout, drop the preset on a button and delete its action.
 
-There is also a cycling readout: each press steps it to the next metric in a list you choose, so one button can cover several metrics.
+There is also a cycling readout: each press steps it to the next metric in a list you choose, so one button can cover several metrics. It is the one SPL readout that never starts or stops logging, and it sits on a lighter background in the presets list so you can tell it apart from the rest.
 
 Once Companion has seen your calibrated channels for the first time, it remembers them, so the SPL presets, variables and feedback dropdowns stay available even when logging is stopped. Before that first logging run there is nothing for Smaart to report, so start logging once to populate them.
 

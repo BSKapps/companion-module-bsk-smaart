@@ -290,23 +290,9 @@ module.exports = function updatePresets(self) {
 		for (const metric of metrics) {
 			const slug = metricSlug(metric)
 			const label = shortMetricLabel(metric)
-			const zone = () => ({ feedbackId: 'splZone', options: { channel: splChannel.key, metric } })
 			presets[`spl_${slug}`] = {
 				category: 'SPL',
-				name: `${metric} readout`,
-				type: 'button',
-				style: {
-					text: `${label}\\n$(${self.label}:${slug}_${chanSlug})`,
-					size: '18',
-					color: WHITE,
-					bgcolor: BLACK,
-				},
-				steps: [{ down: [], up: [] }],
-				feedbacks: [zone()],
-			}
-			presets[`spl_${slug}_tap`] = {
-				category: 'SPL',
-				name: `${metric}, tap to start/stop logging`,
+				name: `${metric} readout, tap to start/stop logging`,
 				type: 'button',
 				style: {
 					text: `\`${label}\n\${$(${self.label}:spl_logging) == 'On' ? $(${self.label}:${slug}_${chanSlug}) : 'TAP'}\``,
@@ -316,19 +302,19 @@ module.exports = function updatePresets(self) {
 					bgcolor: BLACK,
 				},
 				steps: [{ down: [{ actionId: 'splLogging', options: { state: 'toggle' } }], up: [] }],
-				feedbacks: [zone()],
+				feedbacks: [{ feedbackId: 'splZone', options: { channel: splChannel.key, metric } }],
 			}
 		}
 		presets.splCycle = {
 			category: 'SPL',
-			name: 'Cycling readout (press to change metric)',
+			name: 'Cycling readout (press to change metric, never starts or stops logging)',
 			type: 'button',
 			style: {
 				text: `$(${self.label}:spl_cycle_metric) == '' ? 'TAP' : \`\${$(${self.label}:spl_cycle_metric)}\n\${$(${self.label}:spl_cycle_value)}\``,
 				textExpression: true,
 				size: '18',
 				color: WHITE,
-				bgcolor: BLACK,
+				bgcolor: COLOR.neutral,
 			},
 			steps: [
 				{
