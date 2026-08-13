@@ -117,6 +117,9 @@ module.exports = function updatePresets(self) {
 		bgcolor: COLOR.measure,
 	})
 	presets.resetAvg = preset('Measurements', 'Reset Averages', 'RESET\\nAVERAGE', 'resetAvg', { bgcolor: COLOR.reset })
+	presets.triggerTimer = preset('Measurements', 'Trigger Timer', 'TIMER', 'triggerTimer', {
+		bgcolor: COLOR.measure,
+	})
 
 	presets.trackingToggle = preset('Delay', 'Delay Tracking On/Off (toggle)', 'TRACK\\nON/OFF', 'toggleTrackingAll', {
 		bgcolor: COLOR.track,
@@ -128,6 +131,17 @@ module.exports = function updatePresets(self) {
 	})
 	presets.trackAllStop = preset('Delay', 'Stop Delay Tracking', 'TRACK\\nOFF', 'stopTrackingAll', {
 		bgcolor: COLOR.track,
+	})
+	presets.delayUp = preset('Delay', 'Increase Delay', 'DELAY\\n+', 'nudgeDelay', {
+		options: { direction: 'increase' },
+		bgcolor: COLOR.track,
+	})
+	presets.delayDown = preset('Delay', 'Decrease Delay', 'DELAY\\n-', 'nudgeDelay', {
+		options: { direction: 'decrease' },
+		bgcolor: COLOR.track,
+	})
+	presets.resetDelays = preset('Delay', 'Reset Measurement Delays', 'RESET\\nDELAYS', 'resetMeasurementDelays', {
+		bgcolor: COLOR.reset,
 	})
 	presets.findDelay = preset('Delay', 'Find Delay (pick a TF measurement)', 'FIND\\nDELAY', 'findDelay', {
 		options: {
@@ -252,6 +266,15 @@ module.exports = function updatePresets(self) {
 	)
 	presets.hideTrace = preset('Traces', 'Hide Trace', 'HIDE', 'hideTrace', { bgcolor: COLOR.view })
 	presets.hideAll = preset('Traces', 'Hide All Traces', 'HIDE\\nALL', 'hideAllTraces', { bgcolor: COLOR.view })
+	presets.quickCompare = preset('Traces', 'Quick Compare On/Off (toggle)', 'QUICK\\nCOMPARE', 'toggleQuickCompare', {
+		bgcolor: COLOR.capture,
+	})
+	presets.captureQuickCompare = preset('Traces', 'Capture Quick Compare', 'CAPTURE\\nQUICK', 'captureQuickCompare', {
+		bgcolor: COLOR.capture,
+	})
+	presets.copyToAscii = preset('Traces', 'Copy To ASCII', 'COPY\\nASCII', 'copyToAscii', {
+		bgcolor: COLOR.view,
+	})
 	presets.zOrder = preset('Traces', 'Cycle Z Order', 'Z\\nORDER', 'cycleZOrder', {
 		options: { direction: 'forward' },
 		bgcolor: COLOR.zorder,

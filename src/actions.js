@@ -609,6 +609,74 @@ module.exports = function updateActions(self) {
 				await self.issueCommand(await context.parseVariablesInString(action.options.command))
 			},
 		},
+		triggerTimer: {
+			name: 'Trigger Timer',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('shift + T')
+			},
+		},
+		toggleQuickCompare: {
+			name: 'Toggle Quick Compare',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('Q')
+			},
+		},
+		captureQuickCompare: {
+			name: 'Capture Quick Compare',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('option + Q')
+			},
+		},
+		recaptureTrace: {
+			name: 'Recapture',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('shift + command + spacebar')
+			},
+		},
+		nudgeDelay: {
+			name: 'Increase/Decrease Delay',
+			options: [
+				{
+					type: 'dropdown',
+					label: 'Direction',
+					id: 'direction',
+					default: 'increase',
+					tooltip: 'Nudges the delay of the active transfer function, the same as the delay +/- buttons in Smaart',
+					choices: [
+						{ id: 'increase', label: 'Increase' },
+						{ id: 'decrease', label: 'Decrease' },
+					],
+				},
+			],
+			callback: async (action) => {
+				await self.issueCommand(action.options.direction === 'decrease' ? ',' : '.')
+			},
+		},
+		resetMeasurementDelays: {
+			name: 'Reset Measurement Delays',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('option + D')
+			},
+		},
+		copyToAscii: {
+			name: 'Copy To ASCII',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('command + C')
+			},
+		},
+		cycleSkin: {
+			name: 'Cycle Skin',
+			options: [],
+			callback: async () => {
+				await self.issueCommand('ctrl + shift + X')
+			},
+		},
 		customKeypress: {
 			name: 'Custom Keypress',
 			options: [
