@@ -272,6 +272,9 @@ module.exports = function updatePresets(self) {
 	presets.captureQuickCompare = preset('Traces', 'Capture Quick Compare', 'CAPTURE\\nQUICK', 'captureQuickCompare', {
 		bgcolor: COLOR.capture,
 	})
+	presets.recapture = preset('Traces', 'Recapture', 'RE-\\nCAPTURE', 'recaptureTrace', {
+		bgcolor: COLOR.capture,
+	})
 	presets.copyToAscii = preset('Traces', 'Copy To ASCII', 'COPY\\nASCII', 'copyToAscii', {
 		bgcolor: COLOR.view,
 	})
