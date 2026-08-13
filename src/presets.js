@@ -266,7 +266,7 @@ module.exports = function updatePresets(self) {
 	)
 	presets.hideTrace = preset('Traces', 'Hide Trace', 'HIDE', 'hideTrace', { bgcolor: COLOR.view })
 	presets.hideAll = preset('Traces', 'Hide All Traces', 'HIDE\\nALL', 'hideAllTraces', { bgcolor: COLOR.view })
-	presets.quickCompare = preset('Traces', 'Quick Compare On/Off (toggle)', 'QUICK\\nCOMPARE', 'toggleQuickCompare', {
+	presets.quickCompare = preset('Traces', 'Quick Compare On/Off (toggle)', 'QUICK\\nCOMP', 'toggleQuickCompare', {
 		bgcolor: COLOR.capture,
 	})
 	presets.captureQuickCompare = preset('Traces', 'Capture Quick Compare', 'CAPTURE\\nQUICK', 'captureQuickCompare', {
