@@ -19,6 +19,8 @@ const {
 	flattenCalibratedChannels,
 	thresholdsByMetric,
 	flattenMeasurements,
+	serialiseSeenChannels,
+	parseSeenChannels,
 } = require('./api')
 const updateActions = require('./actions')
 const updateFeedbacks = require('./feedbacks')
@@ -57,6 +59,7 @@ class SmaartInstance extends InstanceBase {
 
 	async init(config) {
 		this.config = config
+		this.state.splChannelsSeen = parseSeenChannels(config?.splChannelsSeen)
 		this.refreshDefinitions()
 		this.connect()
 	}
@@ -314,7 +317,7 @@ class SmaartInstance extends InstanceBase {
 			const channelsChanged =
 				channels.map((c) => c.key).join('|') !== this.state.splChannels.map((c) => c.key).join('|')
 			this.state.splChannels = channels
-			if (channels.length > 0) this.state.splChannelsSeen = channels
+			if (channels.length > 0) this.rememberSplChannels(channels)
 			this.state.splMetrics = calibrated.metrics ?? []
 			this.state.splThresholds = thresholdsByMetric(calibrated)
 			this.reconcileSplStreams()
@@ -401,6 +404,14 @@ class SmaartInstance extends InstanceBase {
 			id: c.key,
 			label: `${c.channelName} (${c.deviceName})`,
 		}))
+	}
+
+	rememberSplChannels(channels) {
+		this.state.splChannelsSeen = channels
+		const serialised = serialiseSeenChannels(channels)
+		if (serialised === this.config?.splChannelsSeen) return
+		this.config = { ...this.config, splChannelsSeen: serialised }
+		this.saveConfig(this.config)
 	}
 
 	splPresetChannel() {

@@ -20,6 +20,8 @@ const {
 	flattenCalibratedChannels,
 	thresholdsByMetric,
 	flattenMeasurements,
+	serialiseSeenChannels,
+	parseSeenChannels,
 } = require('../src/api')
 
 describe('payload builders', () => {
@@ -356,5 +358,37 @@ describe('zoomKeypress', () => {
 	test('unknown axis or direction yields undefined rather than a bad string', () => {
 		expect(zoomKeypress('z', '+')).toBeUndefined()
 		expect(zoomKeypress('x', '*')).toBeUndefined()
+	})
+})
+
+describe('seen SPL channel persistence', () => {
+	const channels = [
+		{ key: 'EVO4_FOH_MIC', deviceName: 'EVO4', channelName: 'FOH MIC', channelIndex: 0, streamEndpoint: '/a//b' },
+		{ key: 'EVO4_MIX_OUT', deviceName: 'EVO4', channelName: 'MIX OUT', channelIndex: 1, streamEndpoint: '/a//c' },
+	]
+
+	test('round trips the fields the presets need', () => {
+		const restored = parseSeenChannels(serialiseSeenChannels(channels))
+		expect(restored).toHaveLength(2)
+		expect(restored[0].key).toBe('EVO4_FOH_MIC')
+		expect(restored[0].deviceName).toBe('EVO4')
+		expect(restored[0].channelName).toBe('FOH MIC')
+		expect(restored[1].channelIndex).toBe(1)
+	})
+
+	test('is stable so an unchanged channel list never rewrites config', () => {
+		expect(serialiseSeenChannels(channels)).toBe(serialiseSeenChannels(channels))
+	})
+
+	test('empty and missing input give an empty list, never a throw', () => {
+		expect(parseSeenChannels(undefined)).toEqual([])
+		expect(parseSeenChannels('')).toEqual([])
+		expect(serialiseSeenChannels(undefined)).toBe('[]')
+	})
+
+	test('corrupt or unexpected stored config is ignored rather than crashing init', () => {
+		expect(parseSeenChannels('not json')).toEqual([])
+		expect(parseSeenChannels('{"a":1}')).toEqual([])
+		expect(parseSeenChannels('[{"nokey":true},{"key":""}]')).toEqual([])
 	})
 })

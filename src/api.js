@@ -188,6 +188,28 @@ function viewPresetChoices(commands) {
 	return VIEW_PRESET_ORDER.filter((k) => named.has(k)).map((k) => ({ id: k, label: named.get(k) }))
 }
 
+function serialiseSeenChannels(channels) {
+	return JSON.stringify(
+		(channels ?? []).map((c) => ({
+			key: c.key,
+			deviceName: c.deviceName,
+			channelName: c.channelName,
+			channelIndex: c.channelIndex,
+		})),
+	)
+}
+
+function parseSeenChannels(raw) {
+	if (!raw) return []
+	try {
+		const parsed = JSON.parse(raw)
+		if (!Array.isArray(parsed)) return []
+		return parsed.filter((c) => c && typeof c.key === 'string' && c.key.length > 0)
+	} catch (e) {
+		return []
+	}
+}
+
 module.exports = {
 	errors,
 	lookupError,
@@ -211,4 +233,6 @@ module.exports = {
 	flattenCalibratedChannels,
 	thresholdsByMetric,
 	flattenMeasurements,
+	serialiseSeenChannels,
+	parseSeenChannels,
 }
