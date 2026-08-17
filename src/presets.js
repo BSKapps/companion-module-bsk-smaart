@@ -156,9 +156,15 @@ module.exports = function updatePresets(self) {
 	presets.targetCurves = preset('Display', 'Toggle Target Curves', 'TARGET\\nCURVES', 'showTargetCurves', {
 		bgcolor: COLOR.view,
 	})
-	presets.targetCurvesDialog = preset('Display', 'Target Curves Dialog', 'TARGET\\nPICKER', 'targetCurvesDialog', {
-		bgcolor: COLOR.view,
-	})
+	presets.targetCurvesDialog = preset(
+		'Display',
+		'Target Curves Dialog (opens another every press)',
+		'TARGET\\nPICKER',
+		'targetCurvesDialog',
+		{
+			bgcolor: COLOR.view,
+		},
+	)
 	presets.dataSplBar = preset('Display', 'Toggle Data/SPL Meter Bar', 'DATA\\nSPL', 'toggleDataSplBar', {
 		bgcolor: COLOR.bar,
 	})

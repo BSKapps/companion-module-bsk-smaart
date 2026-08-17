@@ -351,7 +351,7 @@ module.exports = function updateActions(self) {
 			},
 		},
 		targetCurvesDialog: {
-			name: 'Open Target Curves Dialog (picker)',
+			name: 'Open Target Curves Dialog (opens another every press)',
 			options: [],
 			callback: async () => {
 				await self.issueCommand('option + X')

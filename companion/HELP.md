@@ -23,7 +23,7 @@ Smaart does not need to be the front application. Commands go over the network, 
 - Front Trace Offset Up/Down: nudges the front trace's dB offset, the same as Smaart's dB +/- buttons.
 - Toggle Data / SPL Meter Bar: flips the left bar between the Data Library and the SPL meters.
 - Reset SPL Leq Buffers.
-- Open Target Curves Dialog: opens Smaart's target curve picker, as opposed to Show/Hide Target Curves which just shows or hides them.
+- Open Target Curves Dialog: opens Smaart's target curve picker, as opposed to Show/Hide Target Curves which just shows or hides them. Every press opens another picker window, and the Smaart API has no command that closes one, so close them in Smaart itself. Do not add a Custom Keypress of `command + W` to close it: that is Smaart's Close Window command and it closes the main Smaart window, not the picker.
 - Cycle SPL Readout Metric: steps a readout button through a list of metrics you choose.
 - SPL Logging Start/Stop: starts, stops, or toggles SPL logging, which is what makes the live SPL variables available.
 - Display toggles: target curves, coherence, peak hold, SPL meters, SPL mode, input meters, clock/SPL meter, bars.
