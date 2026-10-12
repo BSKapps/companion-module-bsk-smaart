@@ -195,7 +195,13 @@ class SmaartInstance extends InstanceBase {
 
 		socket.addEventListener('error', () => {
 			if (this.socket !== socket) return
-			this.updateStatus(InstanceStatus.ConnectionFailure, 'Socket error')
+			this.socket = null
+			this.stopPolling()
+			this.rejectPending()
+			if (!this.closing) {
+				this.updateStatus(InstanceStatus.ConnectionFailure, 'Smaart not reachable, retrying')
+				this.scheduleReconnect()
+			}
 		})
 
 		socket.addEventListener('close', () => {
